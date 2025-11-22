@@ -47,6 +47,42 @@
       "description": "Admin user avatar",
       "imageUrl": "https://images.unsplash.com/photo-1624395213043-fa2e123b2656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4MDkyNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "man portrait"
+    },
+    {
+      "id": "bed-sheet",
+      "description": "A hand block-printed cotton bed sheet from Jaipur.",
+      "imageUrl": "https://images.unsplash.com/photo-1590212151009-a03422471640?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibG9jayUyMHByaW50JTIwYmVkJTIwc2hlZXR8ZW58MHx8fHwxNzE4NzQ1MTMwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "printed bedsheet"
+    },
+    {
+      "id": "shawl",
+      "description": "A luxurious and warm Pashmina shawl from Kashmir.",
+      "imageUrl": "https://images.unsplash.com/photo-1596700147420-ce2276e044c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwYXNobWluYSUyMHNoYXdsfGVufDB8fHx8MTcxODc0NTIwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pashmina shawl"
+    },
+    {
+      "id": "anklets",
+      "description": "A pair of beautifully crafted silver-plated anklets.",
+      "imageUrl": "https://images.unsplash.com/photo-1620211836100-a3523b0a793c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzaWx2ZXIlMjBhbmtsZXRzfGVufDB8fHx8MTcxODc0NTI2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "silver anklets"
+    },
+    {
+      "id": "diya-lamp",
+      "description": "An ornate brass Diya (oil lamp) with a peacock design.",
+      "imageUrl": "https://images.unsplash.com/photo-1698207969344-77a833d7589c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxicmFzcyUyMGRpeWElMjBsYW1wfGVufDB8fHx8MTcxODc0NTMwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "brass lamp"
+    },
+    {
+      "id": "mojari-shoes",
+      "description": "Handcrafted traditional Indian leather shoes (Mojari) for men.",
+      "imageUrl": "https://images.unsplash.com/photo-1624426830573-7e4a8a1a3e63?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBzaG9lc3xlbnwwfHx8fDE3MTg3NDUzNDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian shoes"
+    },
+    {
+      "id": "bangle-set",
+      "description": "A vibrant set of Meenakari (enamel work) bangles.",
+      "imageUrl": "https://images.unsplash.com/photo-1599029702299-7a718b57738f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBiYW5nbGVzfGVufDB8fHx8MTcxODc0NTM5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian bangles"
     }
   ]
 }
