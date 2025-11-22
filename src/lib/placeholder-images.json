@@ -45,13 +45,13 @@
     {
       "id": "admin-avatar-2",
       "description": "Admin user avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1624395213043-fa2e123b2656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4MDkyNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1624395213043-fa2e123b2656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4MDkyNTJ8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "man portrait"
     },
     {
       "id": "bed-sheet",
       "description": "A hand block-printed cotton bed sheet from Jaipur.",
-      "imageUrl": "https://images.unsplash.com/photo-1590212151009-a03422471640?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibG9jayUyMHByaW50JTIwYmVkJTIwc2hlZXR8ZW58MHx8fHwxNzE4NzQxMTMwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1590212151009-a03422471640?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibG9jayUyMHByaW50JTIwYmVkJTIwc2hlZXR8ZW58MHx8fHwxNzE4NzQxMTMwfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "printed bedsheet"
     },
     {
