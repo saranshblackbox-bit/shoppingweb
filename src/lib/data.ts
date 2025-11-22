@@ -155,8 +155,7 @@ export type User = {
 
 export const users: User[] = [
     { id: 'user-1', name: 'Priya Sharma', email: 'priya.sharma@example.com', role: 'Admin', avatarId: 'admin-avatar-1', registeredAt: '2023-01-15' },
-    { id: 'user-2', name: 'Rohan Mehta', email: 'rohan.mehta@example.com', role: 'Admin', avatarId: 'admin-avatar-2', registeredAt: '2023-02-20' },
-    { id: 'user-3', name: 'Aarav Patel', email: 'aarav.p@example.com', role: 'Customer', avatarId: 'admin-avatar-2', registeredAt: '2023-03-05' },
+    { id: 'user-3', name: 'Aarav Patel', email: 'aarav.p@example.com', role: 'Customer', avatarId: 'customer-avatar', registeredAt: '2023-03-05' },
     { id: 'user-4', name: 'Saanvi Gupta', email: 'saanvi.g@example.com', role: 'Customer', avatarId: 'admin-avatar-1', registeredAt: '2023-04-10' },
 ];
 

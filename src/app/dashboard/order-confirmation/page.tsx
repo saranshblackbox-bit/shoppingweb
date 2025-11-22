@@ -1,9 +1,13 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function OrderConfirmationPage() {
+  const router = useRouter();
+
   return (
     <div className="container mx-auto max-w-2xl py-24 px-4 sm:px-6 lg:px-8">
       <Card className="text-center">
@@ -21,11 +25,9 @@ export default function OrderConfirmationPage() {
                 Order #BHARAT-006
             </p>
             <div className="flex justify-center gap-4 pt-4">
-                <Button asChild>
-                    <Link href="/dashboard">Continue Shopping</Link>
-                </Button>
-                <Button variant="outline" asChild>
-                    <Link href="/dashboard/my-orders">View My Orders</Link>
+                <Button onClick={() => router.push('/dashboard')}>Continue Shopping</Button>
+                <Button variant="outline" onClick={() => router.push('/dashboard/my-orders')}>
+                    View My Orders
                 </Button>
             </div>
         </CardContent>

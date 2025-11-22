@@ -19,10 +19,13 @@ import Link from 'next/link';
 import { useOrders } from '@/context/order-context';
 import type { Order } from '@/lib/data';
 import { default as NextImage } from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
   const { addOrder } = useOrders();
+  const router = useRouter();
+
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
@@ -39,6 +42,7 @@ export default function CheckoutPage() {
       };
       addOrder(newOrder);
       clearCart();
+      router.push('/dashboard/order-confirmation');
     }
   };
 
@@ -184,8 +188,8 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter>
-               <Button asChild className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
-                <Link href="/dashboard/order-confirmation">Place Order</Link>
+               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
+                Place Order
               </Button>
             </CardFooter>
           </Card>

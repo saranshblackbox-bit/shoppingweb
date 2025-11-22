@@ -19,7 +19,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 export function SiteHeader() {
   const pathname = usePathname();
   const userAvatar = PlaceHolderImages.find(
-    (img) => img.id === 'admin-avatar-2'
+    (img) => img.id === 'customer-avatar'
   );
 
   const navLinks = [
