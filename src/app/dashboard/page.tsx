@@ -1,10 +1,40 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { ProductCard } from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { categories, products } from '@/lib/data';
+import type { Product, Category } from '@/lib/data';
 import { Search } from 'lucide-react';
 
 export default function CatalogPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+
+  useEffect(() => {
+    let newFilteredProducts = products;
+
+    if (selectedCategory) {
+      newFilteredProducts = newFilteredProducts.filter(
+        (product) => product.categoryId === selectedCategory
+      );
+    }
+
+    if (searchTerm) {
+      newFilteredProducts = newFilteredProducts.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredProducts(newFilteredProducts);
+  }, [searchTerm, selectedCategory]);
+
+  const handleCategoryClick = (categoryId: string | null) => {
+    setSelectedCategory(categoryId);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
@@ -19,14 +49,28 @@ export default function CatalogPage() {
       <div className="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
         <div className="relative w-full md:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input placeholder="Search for products..." className="pl-10" />
+          <Input
+            placeholder="Search for products..."
+            className="pl-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
         <div className="flex gap-2 flex-wrap justify-center">
-          <Button variant="secondary">All</Button>
+          <Button
+            variant={selectedCategory === null ? 'secondary' : 'ghost'}
+            onClick={() => handleCategoryClick(null)}
+          >
+            All
+          </Button>
           {categories.map((category) => {
             const Icon = category.icon;
             return (
-              <Button key={category.id} variant="ghost">
+              <Button
+                key={category.id}
+                variant={selectedCategory === category.id ? 'secondary' : 'ghost'}
+                onClick={() => handleCategoryClick(category.id)}
+              >
                 <Icon className="mr-2 h-4 w-4 text-accent" />
                 {category.name}
               </Button>
@@ -36,7 +80,7 @@ export default function CatalogPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

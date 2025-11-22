@@ -24,7 +24,6 @@ export function SiteHeader() {
 
   const navLinks = [
     { href: '/dashboard', label: 'Catalog' },
-    { href: '/dashboard/admin', label: 'Admin' },
   ];
 
   return (
