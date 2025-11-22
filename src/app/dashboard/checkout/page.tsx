@@ -18,6 +18,7 @@ import { useCart } from '@/context/cart-context';
 import Link from 'next/link';
 import { useOrders } from '@/context/order-context';
 import type { Order } from '@/lib/data';
+import { default as NextImage } from 'next/image';
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
@@ -146,7 +147,7 @@ export default function CheckoutPage() {
                   <div key={item.product.id} className="flex items-center gap-4">
                     <div className="relative h-16 w-16 rounded-md overflow-hidden border">
                       {image && (
-                        <Image
+                        <NextImage
                           src={image.imageUrl}
                           alt={item.product.name}
                           fill
