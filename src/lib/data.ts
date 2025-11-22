@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Gem, Home, Shirt } from 'lucide-react';
+import { Gem, Home, Shirt, Glasses } from 'lucide-react';
 
 export type Category = {
   id: string;
@@ -11,6 +11,7 @@ export const categories: Category[] = [
   { id: 'apparel', name: 'Apparel', icon: Shirt },
   { id: 'jewelry', name: 'Jewelry', icon: Gem },
   { id: 'home-decor', name: 'Home Decor', icon: Home },
+  { id: 'spectacles', name: 'Spectacles', icon: Glasses },
 ];
 
 export type Product = {
@@ -131,6 +132,15 @@ export const products: Product[] = [
     categoryId: 'jewelry',
     imageId: 'bangle-set',
     stock: 45,
+  },
+  {
+    id: 'prod-13',
+    name: 'Classic Aviator Spectacles',
+    description: 'Timeless aviator frames with a modern twist, suitable for all face shapes. Prescription lenses available.',
+    price: 7500,
+    categoryId: 'spectacles',
+    imageId: 'spectacles',
+    stock: 50,
   }
 ];
 
