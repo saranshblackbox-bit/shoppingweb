@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "saree",
+      "description": "A woman wearing an elegant handcrafted silk saree.",
+      "imageUrl": "https://images.unsplash.com/photo-1618901185975-d59f7091bcfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzaWxrJTIwc2FyZWV8ZW58MHx8fHwxNzYzNzQ3MjE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "silk saree"
+    },
+    {
+      "id": "kurta",
+      "description": "A stylish embroidered men's kurta.",
+      "imageUrl": "https://images.unsplash.com/photo-1734418040900-e964f84e8abb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtZW5zJTIwa3VydGF8ZW58MHx8fHwxNzYzNzg2NTU2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mens kurta"
+    },
+    {
+      "id": "earrings",
+      "description": "A pair of intricate gold jhumka earrings.",
+      "imageUrl": "https://images.unsplash.com/photo-1626784215021-2e39ccf971cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnb2xkJTIwZWFycmluZ3N8ZW58MHx8fHwxNzYzODIyODQ3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gold earrings"
+    },
+    {
+      "id": "necklace",
+      "description": "A traditional Kundan necklace set.",
+      "imageUrl": "https://images.unsplash.com/photo-1661877574666-c6574f69fa9d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxpbmRpYW4lMjBuZWNrbGFjZXxlbnwwfHx8fDE3NjM4MjI4NDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian necklace"
+    },
+    {
+      "id": "vase",
+      "description": "A set of hand-painted terracotta vases.",
+      "imageUrl": "https://images.unsplash.com/photo-1635776398604-7c66ef09186a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0ZXJyYWNvdHRhJTIwdmFzZXxlbnwwfHx8fDE3NjM3NjUzNDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "terracotta vase"
+    },
+    {
+      "id": "wall-hanging",
+      "description": "A colorful Madhubani art wall hanging.",
+      "imageUrl": "https://images.unsplash.com/photo-1713986719987-fb689460f1f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxpbmRpYW4lMjBhcnR8ZW58MHx8fHwxNzYzNzExMzkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian art"
+    },
+    {
+      "id": "admin-avatar-1",
+      "description": "Admin user avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1557053910-d9eadeed1c58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2Mzc0NTI0MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "admin-avatar-2",
+      "description": "Admin user avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1624395213043-fa2e123b2656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4MDkyNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    }
+  ]
 }

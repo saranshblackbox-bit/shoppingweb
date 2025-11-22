@@ -1,0 +1,63 @@
+import Image from 'next/image';
+import type { Product } from '@/lib/data';
+import { categories } from '@/lib/data';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from './ui/button';
+import { ShoppingCart } from 'lucide-react';
+import { Badge } from './ui/badge';
+
+type ProductCardProps = {
+  product: Product;
+};
+
+export function ProductCard({ product }: ProductCardProps) {
+  const category = categories.find((c) => c.id === product.categoryId);
+  const image = PlaceHolderImages.find((img) => img.id === product.imageId);
+
+  return (
+    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      <CardHeader className="p-0">
+        {image && (
+          <div className="aspect-[3/4] overflow-hidden">
+            <Image
+              src={image.imageUrl}
+              alt={product.name}
+              width={600}
+              height={800}
+              data-ai-hint={image.imageHint}
+              className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+        )}
+      </CardHeader>
+      <CardContent className="pt-4 flex-grow">
+        {category && (
+          <Badge variant="outline" className="mb-2 border-accent text-accent">
+            {category.name}
+          </Badge>
+        )}
+        <CardTitle className="font-headline text-xl mb-1">{product.name}</CardTitle>
+        <CardDescription className="text-sm">
+          {product.description}
+        </CardDescription>
+      </CardContent>
+      <CardFooter className="flex justify-between items-center">
+        <p className="text-lg font-semibold text-primary">
+          ${product.price.toFixed(2)}
+        </p>
+        <Button>
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          Add to Cart
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}

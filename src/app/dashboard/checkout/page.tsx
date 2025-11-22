@@ -1,0 +1,156 @@
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { products } from '@/lib/data';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { CreditCard, Truck } from 'lucide-react';
+
+export default function CheckoutPage() {
+  const cartItems = [products[0], products[2]];
+  const subtotal = cartItems.reduce((acc, item) => acc + item.price, 0);
+  const shipping = 10.0;
+  const total = subtotal + shipping;
+
+  return (
+    <div className="container mx-auto max-w-6xl py-12 px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold font-headline text-primary tracking-tight sm:text-5xl">
+          Checkout
+        </h1>
+        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+          Complete your purchase with a few simple steps.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="lg:col-span-2 space-y-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <Truck className="h-6 w-6 text-primary" />
+              <CardTitle className="font-headline text-2xl">
+                Shipping Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="first-name">First Name</Label>
+                <Input id="first-name" placeholder="Priya" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="last-name">Last Name</Label>
+                <Input id="last-name" placeholder="Sharma" />
+              </div>
+              <div className="sm:col-span-2 grid gap-2">
+                <Label htmlFor="address">Address</Label>
+                <Input id="address" placeholder="123 Palace Road" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="city">City</Label>
+                <Input id="city" placeholder="Jaipur" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="state">State</Label>
+                <Input id="state" placeholder="Rajasthan" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="zip">ZIP Code</Label>
+                <Input id="zip" placeholder="302001" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <CreditCard className="h-6 w-6 text-primary" />
+              <CardTitle className="font-headline text-2xl">
+                Payment Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="card-number">Card Number</Label>
+                <Input id="card-number" placeholder="**** **** **** 1234" />
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="grid gap-2 col-span-2">
+                  <Label htmlFor="expiry-date">Expiry Date</Label>
+                  <Input id="expiry-date" placeholder="MM/YY" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="cvc">CVC</Label>
+                  <Input id="cvc" placeholder="123" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="lg:col-span-1">
+          <Card className="sticky top-24">
+            <CardHeader>
+              <CardTitle className="font-headline text-2xl">
+                Order Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {cartItems.map((item) => {
+                const image = PlaceHolderImages.find(
+                  (img) => img.id === item.imageId
+                );
+                return (
+                  <div key={item.id} className="flex items-center gap-4">
+                    <div className="relative h-16 w-16 rounded-md overflow-hidden border">
+                      {image && (
+                        <Image
+                          src={image.imageUrl}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          data-ai-hint={image.imageHint}
+                        />
+                      )}
+                    </div>
+                    <div className="flex-grow">
+                      <p className="font-semibold">{item.name}</p>
+                      <p className="text-sm text-muted-foreground">$ {item.price.toFixed(2)}</p>
+                    </div>
+                    <p className="font-semibold">$ {item.price.toFixed(2)}</p>
+                  </div>
+                );
+              })}
+              <Separator />
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>$ {subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping</span>
+                  <span>$ {shipping.toFixed(2)}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between font-bold text-lg">
+                  <span>Total</span>
+                  <span>$ {total.toFixed(2)}</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full text-lg py-6">Place Order</Button>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
