@@ -12,23 +12,33 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { products } from '@/lib/data';
-import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { CreditCard, ShoppingCart, Truck } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import Link from 'next/link';
+import { useOrders } from '@/context/order-context';
+import type { Order } from '@/lib/data';
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
+  const { addOrder } = useOrders();
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
   
   const handlePlaceOrder = () => {
     // In a real app, you'd process the payment here.
-    // After successful payment, clear the cart.
-    clearCart();
+    if(cartItems.length > 0) {
+      const newOrder: Omit<Order, 'id'> = {
+          customerName: 'Aarav Patel',
+          customerEmail: 'aarav.p@example.com',
+          date: new Date().toISOString().split('T')[0],
+          total: total,
+          status: 'Pending',
+      };
+      addOrder(newOrder);
+      clearCart();
+    }
   };
 
   return (
@@ -109,8 +119,7 @@ export default function CheckoutPage() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div className="grid gap-2 col-span-2">
-                  <Label htmlFor="expiry-date">Expiry Date</Label>
-                  <Input id="expiry-date" placeholder="MM/YY" />
+                  <Label htmlFor="expiry-date">Expiry Date</Label>                  <Input id="expiry-date" placeholder="MM/YY" />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="cvc">CVC</Label>
@@ -174,7 +183,7 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter>
-               <Button asChild className="w-full text-lg py-6" onClick={handlePlaceOrder}>
+               <Button asChild className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
                 <Link href="/dashboard/order-confirmation">Place Order</Link>
               </Button>
             </CardFooter>

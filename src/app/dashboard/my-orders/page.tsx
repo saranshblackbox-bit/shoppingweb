@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Table,
   TableBody,
@@ -7,12 +9,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { orders } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ShoppingCart } from 'lucide-react';
+import { useOrders } from '@/context/order-context';
 
 export default function MyOrdersPage() {
+  const { orders } = useOrders();
   // Assuming we're filtering for a specific customer, e.g. Aarav Patel for this demo
   const customerEmail = 'aarav.p@example.com';
   const myOrders = orders.filter(
