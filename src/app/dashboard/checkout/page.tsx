@@ -20,10 +20,16 @@ import { useCart } from '@/context/cart-context';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
-  const { cartItems } = useCart();
+  const { cartItems, clearCart } = useCart();
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
+  
+  const handlePlaceOrder = () => {
+    // In a real app, you'd process the payment here.
+    // After successful payment, clear the cart.
+    clearCart();
+  };
 
   return (
     <div className="container mx-auto max-w-6xl py-12 px-4 sm:px-6 lg:px-8">
@@ -64,11 +70,11 @@ export default function CheckoutPage() {
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="first-name">First Name</Label>
-                <Input id="first-name" placeholder="Priya" />
+                <Input id="first-name" placeholder="Priya" defaultValue="Aarav" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="last-name">Last Name</Label>
-                <Input id="last-name" placeholder="Sharma" />
+                <Input id="last-name" placeholder="Sharma" defaultValue="Patel" />
               </div>
               <div className="sm:col-span-2 grid gap-2">
                 <Label htmlFor="address">Address</Label>
@@ -168,7 +174,9 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full text-lg py-6">Place Order</Button>
+               <Button asChild className="w-full text-lg py-6" onClick={handlePlaceOrder}>
+                <Link href="/dashboard/order-confirmation">Place Order</Link>
+              </Button>
             </CardFooter>
           </Card>
         </div>

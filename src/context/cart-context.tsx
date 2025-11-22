@@ -12,7 +12,7 @@ type CartItem = {
 type CartContextType = {
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
-  // Potentially add more functions here like removeFromCart, updateQuantity etc.
+  clearCart: () => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -37,27 +37,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
       );
       if (existingItem) {
         itemExists = true;
-        return prevItems;
+        // Increase quantity
+        return prevItems.map(item => 
+          item.product.id === product.id 
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
       }
       return [...prevItems, { product, quantity: 1 }];
     });
-
-    if (itemExists) {
-      toast({
-        title: 'Already in cart',
-        description: `${product.name} is already in your cart.`,
-      });
-    } else {
-      toast({
+    
+    toast({
         title: 'Added to cart',
         description: `${product.name} has been added to your cart.`,
-      });
-    }
+    });
   };
+
+  const clearCart = () => {
+    setCartItems([]);
+  }
 
   const value = {
     cartItems,
     addToCart,
+    clearCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
