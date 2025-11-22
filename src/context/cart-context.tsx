@@ -30,25 +30,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   const addToCart = (product: Product) => {
+    let itemExists = false;
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(
         (item) => item.product.id === product.id
       );
       if (existingItem) {
-        // If item exists, you might want to increase quantity instead
-        // For this simple case, we'll just notify it's already there
-        toast({
-          title: 'Already in cart',
-          description: `${product.name} is already in your cart.`,
-        });
+        itemExists = true;
         return prevItems;
       }
+      return [...prevItems, { product, quantity: 1 }];
+    });
+
+    if (itemExists) {
+      toast({
+        title: 'Already in cart',
+        description: `${product.name} is already in your cart.`,
+      });
+    } else {
       toast({
         title: 'Added to cart',
         description: `${product.name} has been added to your cart.`,
       });
-      return [...prevItems, { product, quantity: 1 }];
-    });
+    }
   };
 
   const value = {
