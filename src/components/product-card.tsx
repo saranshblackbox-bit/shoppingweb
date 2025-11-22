@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import type { Product } from '@/lib/data';
 import { categories } from '@/lib/data';
@@ -13,6 +15,7 @@ import {
 import { Button } from './ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { Badge } from './ui/badge';
+import { useCart } from '@/context/cart-context';
 
 type ProductCardProps = {
   product: Product;
@@ -21,6 +24,7 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   const category = categories.find((c) => c.id === product.categoryId);
   const image = PlaceHolderImages.find((img) => img.id === product.imageId);
+  const { addToCart } = useCart();
 
   return (
     <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -51,9 +55,9 @@ export function ProductCard({ product }: ProductCardProps) {
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <p className="text-lg font-semibold text-primary">
-          ${product.price.toFixed(2)}
+          ₹{product.price.toFixed(2)}
         </p>
-        <Button>
+        <Button onClick={() => addToCart(product)}>
           <ShoppingCart className="mr-2 h-4 w-4" />
           Add to Cart
         </Button>

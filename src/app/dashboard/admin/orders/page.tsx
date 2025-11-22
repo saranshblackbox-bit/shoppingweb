@@ -46,7 +46,7 @@ export default function AdminOrdersPage() {
                 <TableCell className="font-medium">{order.id.toUpperCase()}</TableCell>
                 <TableCell>{order.customerName}</TableCell>
                 <TableCell>{order.date}</TableCell>
-                <TableCell>${order.total.toFixed(2)}</TableCell>
+                <TableCell>₹{order.total.toFixed(2)}</TableCell>
                 <TableCell>
                   <Badge
                     variant={

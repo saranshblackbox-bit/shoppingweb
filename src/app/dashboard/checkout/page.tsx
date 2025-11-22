@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -13,12 +15,14 @@ import { Separator } from '@/components/ui/separator';
 import { products } from '@/lib/data';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { CreditCard, Truck } from 'lucide-react';
+import { CreditCard, ShoppingCart, Truck } from 'lucide-react';
+import { useCart } from '@/context/cart-context';
+import Link from 'next/link';
 
 export default function CheckoutPage() {
-  const cartItems = [products[0], products[2]];
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price, 0);
-  const shipping = 10.0;
+  const { cartItems } = useCart();
+  const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
 
   return (
@@ -31,8 +35,24 @@ export default function CheckoutPage() {
           Complete your purchase with a few simple steps.
         </p>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      
+      {cartItems.length === 0 ? (
+        <Card className="text-center py-12">
+          <CardHeader>
+            <ShoppingCart className="mx-auto h-12 w-12 text-muted-foreground" />
+            <CardTitle className="mt-4 font-headline text-2xl">Your cart is empty</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">Looks like you haven't added anything to your cart yet.</p>
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <Button asChild>
+              <Link href="/dashboard">Continue Shopping</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2 space-y-8">
           <Card>
             <CardHeader className="flex flex-row items-center gap-4">
@@ -105,15 +125,15 @@ export default function CheckoutPage() {
             <CardContent className="space-y-4">
               {cartItems.map((item) => {
                 const image = PlaceHolderImages.find(
-                  (img) => img.id === item.imageId
+                  (img) => img.id === item.product.imageId
                 );
                 return (
-                  <div key={item.id} className="flex items-center gap-4">
+                  <div key={item.product.id} className="flex items-center gap-4">
                     <div className="relative h-16 w-16 rounded-md overflow-hidden border">
                       {image && (
                         <Image
                           src={image.imageUrl}
-                          alt={item.name}
+                          alt={item.product.name}
                           fill
                           className="object-cover"
                           data-ai-hint={image.imageHint}
@@ -121,10 +141,12 @@ export default function CheckoutPage() {
                       )}
                     </div>
                     <div className="flex-grow">
-                      <p className="font-semibold">{item.name}</p>
-                      <p className="text-sm text-muted-foreground">$ {item.price.toFixed(2)}</p>
+                      <p className="font-semibold">{item.product.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {item.quantity} x ₹{item.product.price.toFixed(2)}
+                      </p>
                     </div>
-                    <p className="font-semibold">$ {item.price.toFixed(2)}</p>
+                    <p className="font-semibold">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                   </div>
                 );
               })}
@@ -132,16 +154,16 @@ export default function CheckoutPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>$ {subtotal.toFixed(2)}</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span>$ {shipping.toFixed(2)}</span>
+                  <span>₹{shipping.toFixed(2)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>$ {total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>
@@ -151,6 +173,7 @@ export default function CheckoutPage() {
           </Card>
         </div>
       </div>
+      )}
     </div>
   );
 }

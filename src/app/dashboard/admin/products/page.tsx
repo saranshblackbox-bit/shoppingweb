@@ -77,7 +77,7 @@ export default function AdminProductsPage() {
                   <TableCell className="hidden md:table-cell">
                     {product.stock}
                   </TableCell>
-                  <TableCell>${product.price.toFixed(2)}</TableCell>
+                  <TableCell>₹{product.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
