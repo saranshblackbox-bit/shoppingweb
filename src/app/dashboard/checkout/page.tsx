@@ -33,16 +33,16 @@ export default function CheckoutPage() {
   const handlePlaceOrder = () => {
     // In a real app, you'd process the payment here.
     if(cartItems.length > 0) {
-      const newOrder: Omit<Order, 'id'> = {
+      const newOrderData: Omit<Order, 'id'> = {
           customerName: 'Aarav Patel',
           customerEmail: 'aarav.p@example.com',
           date: new Date().toISOString().split('T')[0],
           total: total,
           status: 'Pending',
       };
-      addOrder(newOrder);
+      const newOrder = addOrder(newOrderData);
       clearCart();
-      router.push('/dashboard/order-confirmation');
+      router.push(`/dashboard/order-confirmation?orderId=${newOrder.id}`);
     }
   };
 
@@ -155,6 +155,7 @@ export default function CheckoutPage() {
                           src={image.imageUrl}
                           alt={item.product.name}
                           fill
+                          sizes="64px"
                           className="object-cover"
                           data-ai-hint={image.imageHint}
                         />

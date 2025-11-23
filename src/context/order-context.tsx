@@ -6,7 +6,7 @@ import { orders as initialOrders } from '@/lib/data';
 
 type OrderContextType = {
   orders: Order[];
-  addOrder: (order: Omit<Order, 'id'>) => void;
+  addOrder: (order: Omit<Order, 'id'>) => Order;
 };
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
@@ -28,6 +28,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
       id: `ord-${String(orders.length + 1).padStart(3, '0')}`,
     };
     setOrders((prevOrders) => [newOrder, ...prevOrders]);
+    return newOrder;
   };
 
   const value = {

@@ -27,33 +27,33 @@ export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
       <CardHeader className="p-0">
         {image && (
-          <div className="aspect-[3/4] overflow-hidden">
+          <div className="aspect-[4/3] overflow-hidden">
             <Image
               src={image.imageUrl}
               alt={product.name}
               width={600}
-              height={800}
+              height={450}
               data-ai-hint={image.imageHint}
               className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
             />
           </div>
         )}
       </CardHeader>
-      <CardContent className="pt-4 flex-grow">
+      <CardContent className="pt-4 flex-grow flex flex-col">
         {category && (
-          <Badge variant="outline" className="mb-2 border-accent text-accent">
+          <Badge variant="outline" className="mb-2 border-accent text-accent w-fit">
             {category.name}
           </Badge>
         )}
         <CardTitle className="font-headline text-xl mb-1">{product.name}</CardTitle>
-        <CardDescription className="text-sm">
+        <CardDescription className="text-sm flex-grow">
           {product.description}
         </CardDescription>
       </CardContent>
-      <CardFooter className="flex justify-between items-center">
+      <CardFooter className="flex justify-between items-center pt-4">
         <p className="text-lg font-semibold text-primary">
           ₹{product.price.toFixed(2)}
         </p>
