@@ -25,6 +25,18 @@ const quickReplies = [
   'What is your return policy?',
 ];
 
+const quickReplyAnswers: Record<string, string> = {
+  'What are your shipping policies?':
+    'We offer free standard shipping on all orders within India. Orders are typically processed within 2 business days and delivered within 5-7 business days.',
+  'How can I track my order?':
+    'Once your order is shipped, you will receive an email with a tracking number. You can use this number on our shipping partner\'s website or by visiting the "My Orders" section in your account.',
+  'What is your return policy?':
+    'We accept returns within 14 days of delivery for a full refund. Please ensure the items are in their original condition. To initiate a return, please visit the "My Orders" page.',
+};
+
+const defaultBotMessage =
+  'Thank you for your message. A support representative will get back to you shortly.';
+
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -60,12 +72,15 @@ export function ChatWidget() {
     setMessages((prev) => [...prev, userMessage]);
     setIsPending(true);
 
+    // Check for a quick reply answer
+    const botResponse =
+      quickReplyAnswers[messageContent] || defaultBotMessage;
+
     // Simulate a bot response with a delay
     setTimeout(() => {
       const botMessage: Message = {
         role: 'bot',
-        content:
-          "Thank you for your message. A support representative will get back to you shortly.",
+        content: botResponse,
       };
       setMessages((prev) => [...prev, botMessage]);
       setIsPending(false);
