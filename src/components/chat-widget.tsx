@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bot, MessageSquare, Send, User, Loader2 } from 'lucide-react';
-import { chatWithSupport } from '@/ai/flows/ai-chatbot-support';
+import type { ChatWithSupportOutput } from '@/ai/flows/ai-chatbot-support';
 
 type Message = {
   role: 'user' | 'bot';
@@ -51,14 +51,25 @@ export function ChatWidget() {
 
     const userMessage: Message = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
 
     startTransition(async () => {
       try {
-        const response = await chatWithSupport({ message: input });
+        const res = await fetch('/api/genkit/chatWithSupportFlow', {
+          method: 'POST',
+          body: JSON.stringify({ message: currentInput }),
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to get response from AI');
+        }
+
+        const response = (await res.json()) as ChatWithSupportOutput;
         const botMessage: Message = { role: 'bot', content: response.response };
         setMessages((prev) => [...prev, botMessage]);
       } catch (error) {
+        console.error(error);
         const errorMessage: Message = {
           role: 'bot',
           content: "I'm sorry, I'm having a little trouble right now. Please try again later.",
