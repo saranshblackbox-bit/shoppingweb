@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useTransition } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -11,9 +11,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Bot, MessageSquare, Send, User, Loader2 } from 'lucide-react';
-import type { ChatWithSupportOutput } from '@/ai/flows/ai-chatbot-support';
 
 type Message = {
   role: 'user' | 'bot';
@@ -24,7 +23,7 @@ export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,15 +34,18 @@ export function ChatWidget() {
       });
     }
   }, [messages]);
-  
+
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setMessages([
-        { role: 'bot', content: 'Namaste! How can I help you explore Bharat Bazaar today?' }
+        {
+          role: 'bot',
+          content:
+            'Namaste! How can I help you explore Bharat Bazaar today?',
+        },
       ]);
     }
   }, [isOpen, messages.length]);
-
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,37 +53,19 @@ export function ChatWidget() {
 
     const userMessage: Message = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
-    const currentInput = input;
     setInput('');
+    setIsPending(true);
 
-    startTransition(async () => {
-      try {
-        const res = await fetch('/api/genkit/chatWithSupportFlow', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message: currentInput }),
-        });
-
-        if (!res.ok) {
-            const errorBody = await res.text();
-            console.error("AI API Error:", res.status, errorBody);
-            throw new Error('Failed to get response from AI');
-        }
-
-        const response = (await res.json()) as ChatWithSupportOutput;
-        const botMessage: Message = { role: 'bot', content: response.response };
-        setMessages((prev) => [...prev, botMessage]);
-      } catch (error) {
-        console.error(error);
-        const errorMessage: Message = {
-          role: 'bot',
-          content: "I'm sorry, I'm having a little trouble right now. Please try again later.",
-        };
-        setMessages((prev) => [...prev, errorMessage]);
-      }
-    });
+    // Simulate a bot response with a delay
+    setTimeout(() => {
+      const botMessage: Message = {
+        role: 'bot',
+        content:
+          "Thank you for your message. A support representative will get back to you shortly.",
+      };
+      setMessages((prev) => [...prev, botMessage]);
+      setIsPending(false);
+    }, 1000);
   };
 
   return (
@@ -101,7 +85,10 @@ export function ChatWidget() {
               Support Chat
             </SheetTitle>
           </SheetHeader>
-          <ScrollArea className="flex-grow my-4 -mx-6 px-6" ref={scrollAreaRef}>
+          <ScrollArea
+            className="flex-grow my-4 -mx-6 px-6"
+            ref={scrollAreaRef}
+          >
             <div className="space-y-4 pr-4">
               {messages.map((message, index) => (
                 <div
@@ -137,14 +124,14 @@ export function ChatWidget() {
               ))}
               {isPending && (
                 <div className="flex items-end gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>
-                        <Bot className="h-5 w-5 text-primary" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="max-w-xs rounded-lg p-3 bg-muted">
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                    </div>
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>
+                      <Bot className="h-5 w-5 text-primary" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="max-w-xs rounded-lg p-3 bg-muted">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  </div>
                 </div>
               )}
             </div>
