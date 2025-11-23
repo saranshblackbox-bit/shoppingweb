@@ -3,14 +3,20 @@
 import { chatWithSupport } from '@/ai/flows/ai-chatbot-support';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest) {
-  const { flowId } = req.params as { flowId: string };
-  const body = await req.json();
-
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { flow: string[] } }
+) {
+  const flowId = params.flow.join('/');
+  
   if (flowId === 'chatWithSupportFlow') {
     try {
+      const body = await req.json();
       if (!body.message) {
-        return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+        return NextResponse.json(
+          { error: 'Message is required' },
+          { status: 400 }
+        );
       }
 
       const response = await chatWithSupport({ message: body.message });
@@ -18,7 +24,10 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
       console.error('Error in chat handler:', error);
       return NextResponse.json(
-        { error: 'An error occurred processing your request.', details: error.message },
+        {
+          error: 'An error occurred processing your request.',
+          details: error.message,
+        },
         { status: 500 }
       );
     }
