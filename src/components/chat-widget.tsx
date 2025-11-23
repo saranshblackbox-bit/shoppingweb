@@ -58,10 +58,15 @@ export function ChatWidget() {
       try {
         const res = await fetch('/api/genkit/chatWithSupportFlow', {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ message: currentInput }),
         });
 
         if (!res.ok) {
+            const errorBody = await res.text();
+            console.error("AI API Error:", res.status, errorBody);
             throw new Error('Failed to get response from AI');
         }
 
