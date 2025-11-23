@@ -19,6 +19,12 @@ type Message = {
   content: string;
 };
 
+const quickReplies = [
+  'What are your shipping policies?',
+  'How can I track my order?',
+  'What is your return policy?',
+];
+
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -47,13 +53,11 @@ export function ChatWidget() {
     }
   }, [isOpen, messages.length]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!input.trim() || isPending) return;
+  const handleSendMessage = (messageContent: string) => {
+    if (!messageContent.trim() || isPending) return;
 
-    const userMessage: Message = { role: 'user', content: input };
+    const userMessage: Message = { role: 'user', content: messageContent };
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
     setIsPending(true);
 
     // Simulate a bot response with a delay
@@ -66,6 +70,16 @@ export function ChatWidget() {
       setMessages((prev) => [...prev, botMessage]);
       setIsPending(false);
     }, 1000);
+  };
+  
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSendMessage(input);
+    setInput('');
+  };
+
+  const handleQuickReply = (reply: string) => {
+    handleSendMessage(reply);
   };
 
   return (
@@ -136,7 +150,17 @@ export function ChatWidget() {
               )}
             </div>
           </ScrollArea>
-          <SheetFooter>
+           <div className="border-t pt-4">
+            <p className="text-sm font-medium text-muted-foreground mb-2 px-1">Quick Replies</p>
+            <div className="flex flex-wrap gap-2">
+              {quickReplies.map((reply, index) => (
+                <Button key={index} variant="outline" size="sm" onClick={() => handleQuickReply(reply)} disabled={isPending}>
+                  {reply}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <SheetFooter className="mt-4">
             <form onSubmit={handleSubmit} className="flex w-full space-x-2">
               <Input
                 value={input}
