@@ -134,8 +134,14 @@ export default function OrderDetailsPage() {
             </CardHeader>
             <CardContent>
                 <p>{order.customerName}</p>
-                <p className="text-muted-foreground">{order.shippingAddress.address}</p>
-                <p className="text-muted-foreground">{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}</p>
+                {order.shippingAddress ? (
+                  <>
+                    <p className="text-muted-foreground">{order.shippingAddress.address}</p>
+                    <p className="text-muted-foreground">{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}</p>
+                  </>
+                ) : (
+                  <p className="text-muted-foreground">Shipping address not available.</p>
+                )}
             </CardContent>
           </Card>
            <Card>
@@ -143,7 +149,11 @@ export default function OrderDetailsPage() {
                 <CardTitle className="flex items-center gap-2"><CreditCard/> Payment Details</CardTitle>
             </CardHeader>
             <CardContent>
+              {order.paymentMethod ? (
                 <p>Card ending in: <span className="font-mono">{order.paymentMethod.slice(-4)}</span></p>
+              ) : (
+                <p>Payment details not available.</p>
+              )}
             </CardContent>
           </Card>
         </div>
