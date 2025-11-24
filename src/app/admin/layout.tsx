@@ -12,6 +12,8 @@ import {
 import Link from 'next/link';
 import { Home, Package, ShoppingCart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { ProductProvider } from '@/context/product-context';
+import { OrderProvider } from '@/context/order-context';
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -74,8 +76,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AdminLayoutContent>{children}</AdminLayoutContent>
-    </Suspense>
+    <ProductProvider>
+      <OrderProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AdminLayoutContent>{children}</AdminLayoutContent>
+        </Suspense>
+      </OrderProvider>
+    </ProductProvider>
   );
 }
