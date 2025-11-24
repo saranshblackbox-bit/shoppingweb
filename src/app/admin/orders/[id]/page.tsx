@@ -1,5 +1,6 @@
+
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useOrders } from '@/context/order-context';
 import {
@@ -48,10 +49,15 @@ export default function OrderDetailsPage() {
   const { getOrderById, updateOrderStatus, isLoading } = useOrders();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const [status, setStatus] = useState<Order['status'] | undefined>();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const order = getOrderById(id);
 
-  if (isLoading) {
+  if (isLoading || !isClient) {
     return <div>Loading order details...</div>;
   }
 
