@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,8 +11,32 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAuth, initiateEmailSignIn } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useUser } from '@/firebase';
 
 export default function LoginPage() {
+  const auth = useAuth();
+  const router = useRouter();
+  const { user, isUserLoading } = useUser();
+  const [email, setEmail] = useState('explorer@bharatbazaar.com');
+  const [password, setPassword] = useState('demologin');
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
+  
+  const handleLogin = () => {
+    initiateEmailSignIn(auth, email, password);
+  };
+
+  if (isUserLoading || user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="mx-auto w-full max-w-sm shadow-xl">
@@ -30,7 +56,8 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
-                defaultValue="explorer@bharatbazaar.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -41,12 +68,13 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                defaultValue="demologin"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            <Button asChild type="submit" className="w-full">
-              <Link href="/dashboard">Login</Link>
+            <Button onClick={handleLogin} type="submit" className="w-full">
+              Login
             </Button>
             <p className="mt-4 text-center text-sm text-muted-foreground">
               This is a demo login. Click the button to proceed.

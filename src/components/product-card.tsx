@@ -1,8 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { Product } from '@/lib/data';
-import { categories } from '@/lib/data';
+import type { Product, Category } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
   Card,
@@ -16,13 +15,21 @@ import { Button } from './ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { useCart } from '@/context/cart-context';
+import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 type ProductCardProps = {
   product: Product;
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-  const category = categories.find((c) => c.id === product.categoryId);
+  const firestore = useFirestore();
+  const categoryDoc = useMemoFirebase(
+    () => (firestore ? doc(firestore, 'categories', product.categoryId) : null),
+    [firestore, product.categoryId]
+  );
+  const { data: category } = useDoc<Category>(categoryDoc);
+  
   const image = PlaceHolderImages.find((img) => img.id === product.imageId);
   const { addToCart } = useCart();
 

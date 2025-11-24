@@ -4,14 +4,15 @@ import { Gem, Home, Shirt, Glasses } from 'lucide-react';
 export type Category = {
   id: string;
   name: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
+  iconName: string;
 };
 
 export const categories: Category[] = [
-  { id: 'apparel', name: 'Apparel', icon: Shirt },
-  { id: 'jewelry', name: 'Jewelry', icon: Gem },
-  { id: 'home-decor', name: 'Home Decor', icon: Home },
-  { id: 'spectacles', name: 'Spectacles', icon: Glasses },
+  { id: 'apparel', name: 'Apparel', iconName: 'Shirt' },
+  { id: 'jewelry', name: 'Jewelry', iconName: 'Gem' },
+  { id: 'home-decor', name: 'Home Decor', iconName: 'Home' },
+  { id: 'spectacles', name: 'Spectacles', iconName: 'Glasses' },
 ];
 
 export type Product = {

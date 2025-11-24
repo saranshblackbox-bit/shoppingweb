@@ -1,12 +1,14 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { Order } from '@/lib/data';
-import { orders as initialOrders } from '@/lib/data';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 type OrderContextType = {
   orders: Order[];
-  addOrder: (order: Omit<Order, 'id'>) => Order;
+  addOrder: (order: Omit<Order, 'id'>) => Order | undefined;
+  isLoading: boolean;
 };
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
@@ -20,20 +22,38 @@ export function useOrders() {
 }
 
 export function OrderProvider({ children }: { children: ReactNode }) {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const { user } = useUser();
+  const firestore = useFirestore();
+  const [orders, setOrders] = useState<Order[]>([]);
 
+  const ordersCollection = useMemoFirebase(
+    () => (user && firestore ? collection(firestore, `users/${user.uid}/orders`) : null),
+    [user, firestore]
+  );
+
+  const { data, isLoading } = useCollection<Order>(ordersCollection);
+
+  useEffect(() => {
+    if (data) {
+      const formattedOrders = data.map(o => ({
+        ...o,
+        id: o.id,
+        date: new Date(o.date).toISOString().split('T')[0],
+      }));
+      setOrders(formattedOrders);
+    }
+  }, [data]);
+  
   const addOrder = (order: Omit<Order, 'id'>) => {
-    const newOrder: Order = {
-      ...order,
-      id: `ord-${String(orders.length + 1).padStart(3, '0')}`,
-    };
-    setOrders((prevOrders) => [newOrder, ...prevOrders]);
-    return newOrder;
+    // This function will now be handled by writing directly to Firestore in the checkout page
+    // We can keep this for local state updates if needed, but it's less critical now.
+    return undefined;
   };
 
   const value = {
     orders,
     addOrder,
+    isLoading,
   };
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;

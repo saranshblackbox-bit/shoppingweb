@@ -16,33 +16,44 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { CreditCard, ShoppingCart, Truck } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import Link from 'next/link';
-import { useOrders } from '@/context/order-context';
 import type { Order } from '@/lib/data';
 import { default as NextImage } from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useUser, useFirestore, addDocumentNonBlocking } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
-  const { addOrder } = useOrders();
   const router = useRouter();
+  const { user } = useUser();
+  const firestore = useFirestore();
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
   
   const handlePlaceOrder = () => {
-    // In a real app, you'd process the payment here.
-    if(cartItems.length > 0) {
-      const newOrderData: Omit<Order, 'id'> = {
-          customerName: 'Aarav Patel',
-          customerEmail: 'aarav.p@example.com',
-          date: new Date().toISOString().split('T')[0],
-          total: total,
+    if(cartItems.length > 0 && user && firestore) {
+      const ordersCollection = collection(firestore, `users/${user.uid}/orders`);
+      const newOrderData = {
+          customerId: user.uid,
+          orderDate: new Date().toISOString(),
+          totalAmount: total,
           status: 'Pending',
+          items: cartItems.map(item => ({
+            productId: item.product.id,
+            productName: item.product.name,
+            quantity: item.quantity,
+            price: item.product.price
+          }))
       };
-      const newOrder = addOrder(newOrderData);
-      clearCart();
-      router.push(`/dashboard/order-confirmation?orderId=${newOrder.id}`);
+
+      addDocumentNonBlocking(ordersCollection, newOrderData).then((docRef) => {
+        if (docRef) {
+          clearCart();
+          router.push(`/dashboard/order-confirmation?orderId=${docRef.id}`);
+        }
+      });
     }
   };
 
@@ -189,7 +200,7 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter>
-               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
+               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0 || !user}>
                 Place Order
               </Button>
             </CardFooter>

@@ -12,15 +12,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ShoppingCart } from 'lucide-react';
-import { useOrders } from '@/context/order-context';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { Order } from '@/lib/data';
 
 export default function MyOrdersPage() {
-  const { orders } = useOrders();
-  // Assuming we're filtering for a specific customer, e.g. Aarav Patel for this demo
-  const customerEmail = 'aarav.p@example.com';
-  const myOrders = orders.filter(
-    (order) => order.customerEmail === customerEmail
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const ordersCollection = useMemoFirebase(
+    () => (user && firestore ? collection(firestore, `users/${user.uid}/orders`) : null),
+    [user, firestore]
   );
+  
+  const { data: myOrders, isLoading } = useCollection<Order>(ordersCollection);
 
   return (
     <div className="container mx-auto max-w-4xl py-12 px-4 sm:px-6 lg:px-8">
@@ -40,7 +45,8 @@ export default function MyOrdersPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {myOrders.length > 0 ? (
+          {isLoading && <p>Loading orders...</p>}
+          {!isLoading && myOrders && myOrders.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -56,7 +62,7 @@ export default function MyOrdersPage() {
                     <TableCell className="font-medium">
                       {order.id.toUpperCase()}
                     </TableCell>
-                    <TableCell>{order.date}</TableCell>
+                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                     <TableCell>₹{order.total.toFixed(2)}</TableCell>
                     <TableCell>
                       <Badge
@@ -80,7 +86,7 @@ export default function MyOrdersPage() {
               </TableBody>
             </Table>
           ) : (
-            <div className="text-center py-8">
+            !isLoading && <div className="text-center py-8">
                 <p className="text-muted-foreground">You have not placed any orders yet.</p>
             </div>
           )}
