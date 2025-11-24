@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ShoppingCart } from 'lucide-react';
 import { useOrders } from '@/context/order-context';
+import { format } from 'date-fns';
 
 export default function MyOrdersPage() {
   const { orders, isLoading } = useOrders();
@@ -44,6 +45,7 @@ export default function MyOrdersPage() {
                   <TableHead>Order ID</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Total</TableHead>
+
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -53,7 +55,7 @@ export default function MyOrdersPage() {
                     <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>
                       {order.id}
                     </TableCell>
-                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
                     <TableCell>₹{order.total.toFixed(2)}</TableCell>
                     <TableCell>
                       <Badge

@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { Order } from '@/lib/data';
 import { useOrders } from '@/context/order-context';
+import { format } from 'date-fns';
 
 
 export default function AdminOrdersPage() {
@@ -40,7 +41,7 @@ export default function AdminOrdersPage() {
                 <TableRow key={order.id}>
                   <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
                    <TableCell className="font-medium">{order.customerName}</TableCell>
-                  <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                  <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
                   <TableCell>₹{order.total.toFixed(2)}</TableCell>
                   <TableCell>
                     <Badge
