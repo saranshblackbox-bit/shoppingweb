@@ -119,7 +119,7 @@ export default function OrderDetailsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Order Summary</CardTitle>
-              <CardDescription>Order ID: {order.id}</CardDescription>
+              <CardDescription>Order ID: {order.id.slice(0,8)}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex justify-between">

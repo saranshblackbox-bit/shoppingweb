@@ -51,7 +51,7 @@ export default function AdminOrdersPage() {
               <TableBody>
                 {orders.map((order) => (
                   <TableRow key={order.id} onClick={() => router.push(getAdminLink(`/admin/orders/${order.id}`))} className="cursor-pointer">
-                    <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
+                    <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id.slice(0,8)}</TableCell>
                     <TableCell className="font-medium">{order.customerName}</TableCell>
                     <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
                     <TableCell>₹{order.total.toFixed(2)}</TableCell>

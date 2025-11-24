@@ -129,7 +129,7 @@ export default function AdminDashboardPage() {
                   <TableRow key={order.id} onClick={() => router.push(getAdminLink(`/admin/orders/${order.id}`))} className="cursor-pointer">
                     <TableCell className="font-medium">
                       <Link href={getAdminLink(`/admin/orders/${order.id}`)} className="hover:underline truncate block" style={{maxWidth: '100px'}}>
-                        {order.id}
+                        {order.id.slice(0, 8)}
                       </Link>
                     </TableCell>
                     <TableCell>{order.customerName}</TableCell>
