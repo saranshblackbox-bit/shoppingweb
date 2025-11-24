@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -48,7 +49,6 @@ export default function OrderDetailsPage() {
   const { toast } = useToast();
   const { getOrderById, updateOrderStatus, isLoading } = useOrders();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const [status, setStatus] = useState<Order['status'] | undefined>();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -65,16 +65,12 @@ export default function OrderDetailsPage() {
     return <div>Order not found.</div>;
   }
   
-  const handleStatusChange = (newStatus: Order['status']) => {
-    setStatus(newStatus);
-  };
-  
-  const handleUpdateStatus = () => {
-    if(status) {
-      updateOrderStatus(order.id, status);
+  const handleUpdateStatus = (newStatus: Order['status']) => {
+    if(newStatus) {
+      updateOrderStatus(order.id, newStatus);
       toast({
         title: "Order Status Updated",
-        description: `Order #${order.id.slice(0,8)} has been updated to "${status}".`,
+        description: `Order #${order.id.slice(0,8)} has been updated to "${newStatus}".`,
       })
     }
   }
@@ -207,7 +203,7 @@ export default function OrderDetailsPage() {
             </CardHeader>
             <CardContent>
               <div className="grid gap-2">
-                 <Select onValueChange={handleStatusChange} defaultValue={order.status}>
+                 <Select onValueChange={(newStatus: Order['status']) => handleUpdateStatus(newStatus)} defaultValue={order.status}>
                     <SelectTrigger>
                         <SelectValue placeholder="Change status..." />
                     </SelectTrigger>
@@ -221,9 +217,6 @@ export default function OrderDetailsPage() {
                 </Select>
               </div>
             </CardContent>
-            <CardFooter>
-              <Button onClick={handleUpdateStatus} disabled={!status || status === order.status}>Update</Button>
-            </CardFooter>
           </Card>
         </div>
       </div>
