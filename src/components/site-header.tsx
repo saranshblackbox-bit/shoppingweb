@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ShoppingCart, Sparkles, User, Shield } from 'lucide-react';
 import { Button } from './ui/button';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -15,36 +15,34 @@ import {
 } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
-
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const { user } = useUser();
-  const firestore = useFirestore();
+  const searchParams = useSearchParams();
+  const role = searchParams.get('role');
+  const isAdmin = role === 'admin' || pathname.startsWith('/admin');
 
   const userAvatar = PlaceHolderImages.find(
     (img) => img.id === 'customer-avatar'
   );
-
-  const adminRoleDoc = useMemoFirebase(
-    () => (user && firestore ? doc(firestore, 'roles_admin', user.uid) : null),
-    [user, firestore]
+  
+  const adminAvatar = PlaceHolderImages.find(
+    (img) => img.id === 'admin-avatar-1'
   );
-  const { data: adminRole } = useDoc(adminRoleDoc);
-  const isAdmin = !!adminRole;
-
 
   const navLinks = [
     { href: '/dashboard', label: 'Catalog' },
   ];
 
+  const getHref = (href: string) => {
+    return isAdmin ? `${href}?role=admin` : href;
+  }
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
         <div className="flex gap-6 md:gap-10">
-          <Link href="/dashboard" className="flex items-center space-x-2">
+          <Link href={getHref("/dashboard")} className="flex items-center space-x-2">
             <Sparkles className="h-6 w-6 text-primary" />
             <span className="inline-block font-bold font-headline text-lg">
               Bharat Bazaar
@@ -54,7 +52,7 @@ export function SiteHeader() {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={getHref(link.href)}
                 className={cn(
                   'flex items-center text-lg font-medium text-foreground/60 transition-colors hover:text-foreground/80 sm:text-sm',
                   pathname.startsWith(link.href) &&
@@ -84,7 +82,7 @@ export function SiteHeader() {
           <nav className="flex items-center space-x-2">
             {!isAdmin && (
               <Button asChild variant="ghost" size="icon">
-                <Link href="/dashboard/checkout">
+                <Link href={getHref("/dashboard/checkout")}>
                   <ShoppingCart className="h-5 w-5" />
                   <span className="sr-only">Shopping Cart</span>
                 </Link>
@@ -94,12 +92,10 @@ export function SiteHeader() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    {userAvatar && (
-                      <AvatarImage
-                        src={user?.photoURL ?? userAvatar.imageUrl}
-                        alt={user?.displayName ?? 'User'}
-                        data-ai-hint={userAvatar.imageHint}
-                      />
+                    {isAdmin ? (
+                        adminAvatar && <AvatarImage src={adminAvatar.imageUrl} alt="Admin" data-ai-hint={adminAvatar.imageHint} />
+                    ) : (
+                        userAvatar && <AvatarImage src={userAvatar.imageUrl} alt="User" data-ai-hint={userAvatar.imageHint} />
                     )}
                     <AvatarFallback>
                       <User />
@@ -111,16 +107,16 @@ export function SiteHeader() {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">
-                      {isAdmin ? 'Admin' : (user?.isAnonymous ? 'Guest' : user?.displayName ?? 'Aarav Patel')}
+                      {isAdmin ? 'Admin' : 'Guest'}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {user?.email ?? 'guest@example.com'}
+                      {isAdmin ? 'admin@example.com' : 'guest@example.com'}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {!user?.isAnonymous && !isAdmin && <DropdownMenuItem asChild>
-                  <Link href="/dashboard/my-orders">My Orders</Link>
+                {!isAdmin && <DropdownMenuItem asChild>
+                  <Link href={getHref("/dashboard/my-orders")}>My Orders</Link>
                 </DropdownMenuItem>}
                  {isAdmin && (
                   <DropdownMenuItem asChild>

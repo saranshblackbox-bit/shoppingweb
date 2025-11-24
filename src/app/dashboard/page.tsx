@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { ProductCard } from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { Product, Category } from '@/lib/data';
+import { products, categories, type Product, type Category } from '@/lib/data';
 import { Search, Gem, Home, Shirt, Glasses } from 'lucide-react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
 
 const iconMap = {
   Shirt,
@@ -20,39 +18,22 @@ export default function CatalogPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const firestore = useFirestore();
-
-  const categoriesCollection = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'categories') : null),
-    [firestore]
-  );
-  const { data: categories, isLoading: isLoadingCategories } = useCollection<Category>(categoriesCollection);
-
-  const productsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-
-    let q = collection(firestore, 'products');
+  const filteredProducts = useMemo(() => {
+    let filtered = products;
 
     if (selectedCategory) {
-      return query(q, where('categoryId', '==', selectedCategory));
+      filtered = filtered.filter(
+        (product) => product.categoryId === selectedCategory
+      );
     }
 
-    return q;
-  }, [firestore, selectedCategory]);
-
-  const { data: products, isLoading: isLoadingProducts } = useCollection<Product>(productsQuery);
-
-  const filteredProducts = useMemo(() => {
-    if (!products) return [];
-
     if (searchTerm) {
-      return products.filter((product) =>
+      filtered = filtered.filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    return products;
-  }, [products, searchTerm]);
-
+    return filtered;
+  }, [searchTerm, selectedCategory]);
 
   const handleCategoryClick = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
@@ -86,7 +67,7 @@ export default function CatalogPage() {
           >
             All
           </Button>
-          {categories && categories.map((category) => {
+          {categories.map((category) => {
             const Icon = iconMap[category.iconName as keyof typeof iconMap];
             return (
               <Button
@@ -101,25 +82,11 @@ export default function CatalogPage() {
           })}
         </div>
       </div>
-      {isLoadingProducts || isLoadingCategories ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="flex flex-col space-y-3">
-              <div className="h-[225px] w-full rounded-xl bg-muted animate-pulse" />
-              <div className="space-y-2">
-                <div className="h-4 w-[250px] bg-muted animate-pulse rounded-md" />
-                <div className="h-4 w-[200px] bg-muted animate-pulse rounded-md" />
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-      )}
     </div>
   );
 }

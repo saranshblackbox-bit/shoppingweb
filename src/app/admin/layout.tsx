@@ -1,8 +1,6 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { Sidebar, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
@@ -16,24 +14,19 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isUserLoading } = useUser();
-  const firestore = useFirestore();
   const router = useRouter();
   const pathname = usePathname();
-
-  const adminRoleDoc = useMemoFirebase(
-    () => (user && firestore ? doc(firestore, 'roles_admin', user.uid) : null),
-    [user, firestore]
-  );
-  const { data: adminRole, isLoading: isAdminLoading } = useDoc(adminRoleDoc);
+  const searchParams = useSearchParams();
+  const role = searchParams.get('role');
+  const isAdmin = role === 'admin' || pathname.startsWith('/admin');
 
   useEffect(() => {
-    if (!isUserLoading && !isAdminLoading && !adminRole) {
+    if (!isAdmin) {
       router.push('/dashboard');
     }
-  }, [user, adminRole, isUserLoading, isAdminLoading, router]);
+  }, [isAdmin, router]);
 
-  if (isUserLoading || isAdminLoading || !adminRole) {
+  if (!isAdmin) {
     return <div>Loading access...</div>;
   }
 

@@ -12,20 +12,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ShoppingCart } from 'lucide-react';
-import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
-import type { Order } from '@/lib/data';
+import { useOrders } from '@/context/order-context';
 
 export default function MyOrdersPage() {
-  const { user } = useUser();
-  const firestore = useFirestore();
-
-  const ordersCollection = useMemoFirebase(
-    () => (user && firestore ? query(collection(firestore, `users/${user.uid}/orders`), orderBy('orderDate', 'desc')) : null),
-    [user, firestore]
-  );
-  
-  const { data: myOrders, isLoading } = useCollection<Order>(ordersCollection);
+  const { orders, isLoading } = useOrders();
+  const myOrders = orders.filter(o => o.customerEmail === 'aarav.p@example.com');
 
   return (
     <div className="container mx-auto max-w-4xl py-12 px-4 sm:px-6 lg:px-8">
@@ -62,8 +53,8 @@ export default function MyOrdersPage() {
                     <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>
                       {order.id}
                     </TableCell>
-                    <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
-                    <TableCell>₹{order.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                    <TableCell>₹{order.total.toFixed(2)}</TableCell>
                     <TableCell>
                       <Badge
                         variant={

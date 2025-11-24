@@ -10,31 +10,12 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, getDocs, collectionGroup } from 'firebase/firestore';
 import type { Order } from '@/lib/data';
-import { useEffect, useState } from 'react';
+import { useOrders } from '@/context/order-context';
+
 
 export default function AdminOrdersPage() {
-  const firestore = useFirestore();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (!firestore) return;
-    
-    const fetchOrders = async () => {
-      setIsLoading(true);
-      const ordersQuery = query(collectionGroup(firestore, 'orders'), orderBy('orderDate', 'desc'));
-      const querySnapshot = await getDocs(ordersQuery);
-      const allOrders = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Order));
-      setOrders(allOrders);
-      setIsLoading(false);
-    };
-
-    fetchOrders();
-  }, [firestore]);
-
+  const { orders, isLoading } = useOrders();
 
   return (
     <Card>
@@ -48,7 +29,7 @@ export default function AdminOrdersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Order ID</TableHead>
-                <TableHead>Customer ID</TableHead>
+                <TableHead>Customer</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Status</TableHead>
@@ -58,9 +39,9 @@ export default function AdminOrdersPage() {
               {orders.map((order) => (
                 <TableRow key={order.id}>
                   <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
-                   <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.customerId}</TableCell>
-                  <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
-                  <TableCell>₹{order.totalAmount.toFixed(2)}</TableCell>
+                   <TableCell className="font-medium">{order.customerName}</TableCell>
+                  <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                  <TableCell>₹{order.total.toFixed(2)}</TableCell>
                   <TableCell>
                     <Badge
                       variant={

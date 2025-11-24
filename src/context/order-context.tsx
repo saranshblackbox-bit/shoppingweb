@@ -1,13 +1,14 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import type { Order } from '@/lib/data';
-import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import type { Order as OrderType } from '@/lib/data';
+import { orders as mockOrders } from '@/lib/data';
+import { v4 as uuidv4 } from 'uuid';
+
 
 type OrderContextType = {
-  orders: Order[];
-  addOrder: (order: Omit<Order, 'id'>) => Order | undefined;
+  orders: OrderType[];
+  addOrder: (order: Omit<OrderType, 'id'>) => OrderType;
   isLoading: boolean;
 };
 
@@ -22,32 +23,16 @@ export function useOrders() {
 }
 
 export function OrderProvider({ children }: { children: ReactNode }) {
-  const { user } = useUser();
-  const firestore = useFirestore();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderType[]>(mockOrders);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const ordersCollection = useMemoFirebase(
-    () => (user && firestore ? collection(firestore, `users/${user.uid}/orders`) : null),
-    [user, firestore]
-  );
-
-  const { data, isLoading } = useCollection<Order>(ordersCollection);
-
-  useEffect(() => {
-    if (data) {
-      const formattedOrders = data.map(o => ({
-        ...o,
-        id: o.id,
-        date: new Date(o.date).toISOString().split('T')[0],
-      }));
-      setOrders(formattedOrders);
-    }
-  }, [data]);
-  
-  const addOrder = (order: Omit<Order, 'id'>) => {
-    // This function will now be handled by writing directly to Firestore in the checkout page
-    // We can keep this for local state updates if needed, but it's less critical now.
-    return undefined;
+  const addOrder = (orderData: Omit<OrderType, 'id'>): OrderType => {
+    const newOrder: OrderType = {
+      ...orderData,
+      id: uuidv4(),
+    };
+    setOrders(prevOrders => [...prevOrders, newOrder]);
+    return newOrder;
   };
 
   const value = {

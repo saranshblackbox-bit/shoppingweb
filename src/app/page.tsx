@@ -4,43 +4,26 @@ import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useAuth, initiateAnonymousSignIn, useUser, initiateEmailSignIn } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
 export default function LoginPage() {
-  const auth = useAuth();
   const router = useRouter();
-  const { user, isUserLoading } = useUser();
-  const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('password');
-
-
-  useEffect(() => {
-    if (user) {
-      router.push('/dashboard');
-    }
-  }, [user, router]);
 
   const handleGuestLogin = () => {
-    initiateAnonymousSignIn(auth);
+    router.push('/dashboard');
   };
   
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    initiateEmailSignIn(auth, email, password);
+    router.push('/dashboard?role=admin');
   };
 
-  if (isUserLoading || user) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -59,8 +42,7 @@ export default function LoginPage() {
                   type="email"
                   placeholder="admin@example.com"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  defaultValue="admin@example.com"
                 />
               </div>
               <div className="grid gap-2">
@@ -69,8 +51,7 @@ export default function LoginPage() {
                   id="password" 
                   type="password" 
                   required 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  defaultValue="password"
                 />
               </div>
               <Button type="submit" className="w-full">

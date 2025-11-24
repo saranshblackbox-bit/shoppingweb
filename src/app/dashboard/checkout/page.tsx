@@ -16,30 +16,27 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { CreditCard, ShoppingCart, Truck } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import Link from 'next/link';
-import type { Order } from '@/lib/data';
+import { useOrders } from '@/context/order-context';
 import { default as NextImage } from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useUser, useFirestore, addDocumentNonBlocking } from '@/firebase';
-import { collection } from 'firebase/firestore';
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
+  const { addOrder } = useOrders();
   const router = useRouter();
-  const { user } = useUser();
-  const firestore = useFirestore();
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
   
   const handlePlaceOrder = () => {
-    if(cartItems.length > 0 && user && firestore) {
-      const ordersCollection = collection(firestore, `users/${user.uid}/orders`);
+    if(cartItems.length > 0) {
       const newOrderData = {
-          customerId: user.uid,
-          orderDate: new Date().toISOString(),
-          totalAmount: total,
-          status: 'Pending',
+          customerName: "Aarav Patel",
+          customerEmail: 'aarav.p@example.com',
+          date: new Date().toISOString().split('T')[0],
+          total: total,
+          status: 'Pending' as const,
           items: cartItems.map(item => ({
             productId: item.product.id,
             productName: item.product.name,
@@ -48,12 +45,12 @@ export default function CheckoutPage() {
           }))
       };
 
-      addDocumentNonBlocking(ordersCollection, newOrderData).then((docRef) => {
-        if (docRef) {
-          clearCart();
-          router.push(`/dashboard/order-confirmation?orderId=${docRef.id}`);
-        }
-      });
+      const newOrder = addOrder(newOrderData);
+      
+      if (newOrder) {
+        clearCart();
+        router.push(`/dashboard/order-confirmation?orderId=${newOrder.id}`);
+      }
     }
   };
 
@@ -135,7 +132,8 @@ export default function CheckoutPage() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div className="grid gap-2 col-span-2">
-                  <Label htmlFor="expiry-date">Expiry Date</Label>                  <Input id="expiry-date" placeholder="MM/YY" />
+                  <Label htmlFor="expiry-date">Expiry Date</Label>
+                  <Input id="expiry-date" placeholder="MM/YY" />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="cvc">CVC</Label>
@@ -200,7 +198,7 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter>
-               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0 || !user}>
+               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
                 Place Order
               </Button>
             </CardFooter>

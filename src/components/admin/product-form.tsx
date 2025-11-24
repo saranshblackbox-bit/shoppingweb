@@ -20,9 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Product, Category } from '@/lib/data';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { products, categories, type Product } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useRouter } from 'next/navigation';
 
@@ -43,14 +41,7 @@ type ProductFormProps = {
 };
 
 export function ProductForm({ product, onSave }: ProductFormProps) {
-  const firestore = useFirestore();
   const router = useRouter();
-
-  const categoriesCollection = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'categories') : null),
-    [firestore]
-  );
-  const { data: categories, isLoading: isLoadingCategories } = useCollection<Category>(categoriesCollection);
 
   const {
     register,
@@ -61,7 +52,6 @@ export function ProductForm({ product, onSave }: ProductFormProps) {
     resolver: zodResolver(productSchema),
     defaultValues: product ? {
         ...product,
-        price: product.price ?? 0,
         stock: product.stock ?? 0,
     } : {
         price: 0,
@@ -109,7 +99,7 @@ export function ProductForm({ product, onSave }: ProductFormProps) {
                 name="categoryId"
                 control={control}
                 render={({ field }) => (
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingCategories}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
