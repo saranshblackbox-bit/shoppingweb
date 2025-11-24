@@ -16,9 +16,7 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const role = searchParams.get('role');
-  const isAdmin = role === 'admin' || pathname.startsWith('/admin');
+  const isAdmin = pathname.startsWith('/admin');
 
   useEffect(() => {
     if (!isAdmin) {
