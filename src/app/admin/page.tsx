@@ -15,17 +15,19 @@ import {
   ShoppingCart,
   IndianRupee,
   ArrowRight,
+  Loader2,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useProducts } from '@/context/product-context';
 import { useOrders } from '@/context/order-context';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const { orders } = useOrders();
-  const { products } = useProducts();
+  const { orders, isLoading: isLoadingOrders } = useOrders();
+  const { products, isLoading: isLoadingProducts } = useProducts();
 
   const totalProducts = products.length;
   const totalOrders = orders.length;
@@ -36,6 +38,8 @@ export default function AdminDashboardPage() {
     .slice(0, 5);
 
   const getAdminLink = (path: string) => `${path}?role=admin`;
+
+  const isLoading = isLoadingProducts || isLoadingOrders;
 
   return (
     <div className="space-y-8">
@@ -48,7 +52,11 @@ export default function AdminDashboardPage() {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalProducts}</div>
+            {isLoading ? (
+              <Skeleton className="h-8 w-16" />
+            ) : (
+              <div className="text-2xl font-bold">{totalProducts}</div>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -57,7 +65,11 @@ export default function AdminDashboardPage() {
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalOrders}</div>
+            {isLoading ? (
+              <Skeleton className="h-8 w-16" />
+            ) : (
+              <div className="text-2xl font-bold">{totalOrders}</div>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -66,9 +78,13 @@ export default function AdminDashboardPage() {
             <IndianRupee className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              ₹{totalRevenue.toLocaleString('en-IN')}
-            </div>
+             {isLoading ? (
+              <Skeleton className="h-8 w-24" />
+            ) : (
+              <div className="text-2xl font-bold">
+                ₹{totalRevenue.toLocaleString('en-IN')}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -86,44 +102,50 @@ export default function AdminDashboardPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Order ID</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentOrders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
-                  <TableCell>{order.customerName}</TableCell>
-                  <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
-                  <TableCell>₹{order.total.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        order.status === 'Delivered'
-                          ? 'default'
-                          : order.status === 'Cancelled'
-                          ? 'destructive'
-                          : 'secondary'
-                      }
-                      className={cn(
-                        order.status === 'Delivered' &&
-                          'bg-green-700/80 text-white'
-                      )}
-                    >
-                      {order.status}
-                    </Badge>
-                  </TableCell>
+          {isLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+           ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Order ID</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {recentOrders.map((order) => (
+                  <TableRow key={order.id}>
+                    <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
+                    <TableCell>{order.customerName}</TableCell>
+                    <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
+                    <TableCell>₹{order.total.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          order.status === 'Delivered'
+                            ? 'default'
+                            : order.status === 'Cancelled'
+                            ? 'destructive'
+                            : 'secondary'
+                        }
+                        className={cn(
+                          order.status === 'Delivered' &&
+                            'bg-green-700/80 text-white'
+                        )}
+                      >
+                        {order.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
        <Card>
