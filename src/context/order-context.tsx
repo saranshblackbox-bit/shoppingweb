@@ -36,22 +36,27 @@ const getInitialOrders = (): OrderType[] => {
 };
 
 export function OrderProvider({ children }: { children: ReactNode }) {
-  const [orders, setOrders] = useState<OrderType[]>(getInitialOrders);
+  const [orders, setOrders] = useState<OrderType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    try {
-        window.localStorage.setItem('orders', JSON.stringify(orders));
-    } catch (error) {
-        console.warn(`Error setting localStorage key “orders”:`, error);
-    }
-     setIsLoading(false);
-  }, [orders]);
-  
-  useEffect(() => {
+    // This effect runs only on the client, after the initial render.
+    // This prevents hydration mismatch.
+    setOrders(getInitialOrders());
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    // This effect saves to localStorage whenever orders change, but only on the client.
+    if (typeof window !== 'undefined' && !isLoading) {
+        try {
+            window.localStorage.setItem('orders', JSON.stringify(orders));
+        } catch (error) {
+            console.warn(`Error setting localStorage key “orders”:`, error);
+        }
+    }
+  }, [orders, isLoading]);
+  
   const addOrder = (orderData: Omit<OrderType, 'id'>): OrderType => {
     const newOrder: OrderType = {
       ...orderData,
@@ -64,7 +69,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   const value = {
     orders,
     addOrder,
-    isLoading: isLoading,
+    isLoading,
   };
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;

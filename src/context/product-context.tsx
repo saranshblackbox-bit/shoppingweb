@@ -39,21 +39,26 @@ const getInitialProducts = (): Product[] => {
 
 
 export function ProductProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(getInitialProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    try {
-        window.localStorage.setItem('products', JSON.stringify(products));
-    } catch (error) {
-        console.warn(`Error setting localStorage key “products”:`, error);
-    }
-    setIsLoading(false);
-  }, [products]);
-  
-  useEffect(() => {
+    // This effect runs only on the client, after the initial render.
+    // This prevents hydration mismatch.
+    setProducts(getInitialProducts());
     setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    // This effect saves to localStorage whenever products change, but only on the client.
+     if (typeof window !== 'undefined' && !isLoading) {
+        try {
+            window.localStorage.setItem('products', JSON.stringify(products));
+        } catch (error) {
+            console.warn(`Error setting localStorage key “products”:`, error);
+        }
+    }
+  }, [products, isLoading]);
 
   const addProduct = (productData: Omit<Product, 'id'>): Product => {
     const newProduct: Product = {
@@ -75,6 +80,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   };
   
   const getProductById = (productId: string) => {
+      // Since products are now loaded in an effect, we need to find from the state
       return products.find(p => p.id === productId);
   }
 
@@ -84,7 +90,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
     updateProduct,
     deleteProduct,
     getProductById,
-    isLoading: isLoading,
+    isLoading,
   };
 
   return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>;
