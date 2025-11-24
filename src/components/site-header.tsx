@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ShoppingCart, Sparkles, User } from 'lucide-react';
+import { ShoppingCart, Sparkles, User, Shield } from 'lucide-react';
 import { Button } from './ui/button';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -15,12 +15,26 @@ import {
 } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const { user } = useUser();
+  const firestore = useFirestore();
+
   const userAvatar = PlaceHolderImages.find(
     (img) => img.id === 'customer-avatar'
   );
+
+  const adminRoleDoc = useMemoFirebase(
+    () => (user && firestore ? doc(firestore, 'roles_admin', user.uid) : null),
+    [user, firestore]
+  );
+  const { data: adminRole } = useDoc(adminRoleDoc);
+  const isAdmin = !!adminRole;
+
 
   const navLinks = [
     { href: '/dashboard', label: 'Catalog' },
@@ -52,24 +66,38 @@ export function SiteHeader() {
                 {link.label}
               </Link>
             ))}
+             {isAdmin && (
+              <Link
+                href="/admin/products"
+                className={cn(
+                  'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm',
+                   pathname.startsWith('/admin') ? 'text-foreground' : 'text-foreground/60'
+                )}
+              >
+                <Shield className="mr-2 h-4 w-4" />
+                Admin
+              </Link>
+            )}
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
-            <Button asChild variant="ghost" size="icon">
-              <Link href="/dashboard/checkout">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="sr-only">Shopping Cart</span>
-              </Link>
-            </Button>
+            {!isAdmin && (
+              <Button asChild variant="ghost" size="icon">
+                <Link href="/dashboard/checkout">
+                  <ShoppingCart className="h-5 w-5" />
+                  <span className="sr-only">Shopping Cart</span>
+                </Link>
+              </Button>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
                     {userAvatar && (
                       <AvatarImage
-                        src={userAvatar.imageUrl}
-                        alt="User"
+                        src={user?.photoURL ?? userAvatar.imageUrl}
+                        alt={user?.displayName ?? 'User'}
                         data-ai-hint={userAvatar.imageHint}
                       />
                     )}
@@ -83,17 +111,22 @@ export function SiteHeader() {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">
-                      Aarav Patel
+                      {isAdmin ? 'Admin' : (user?.isAnonymous ? 'Guest' : user?.displayName ?? 'Aarav Patel')}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      aarav.p@example.com
+                      {user?.email ?? 'guest@example.com'}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                {!user?.isAnonymous && !isAdmin && <DropdownMenuItem asChild>
                   <Link href="/dashboard/my-orders">My Orders</Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem>}
+                 {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin/products">Admin Panel</Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/">Logout</Link>

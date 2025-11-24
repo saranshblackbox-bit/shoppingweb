@@ -8,14 +8,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useAuth, initiateAnonymousSignIn, useUser } from '@/firebase';
+import { useAuth, initiateAnonymousSignIn, useUser, initiateEmailSignIn } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 
 export default function LoginPage() {
   const auth = useAuth();
   const router = useRouter();
   const { user, isUserLoading } = useUser();
+  const [email, setEmail] = useState('admin@example.com');
+  const [password, setPassword] = useState('password');
+
 
   useEffect(() => {
     if (user) {
@@ -23,8 +29,13 @@ export default function LoginPage() {
     }
   }, [user, router]);
 
-  const handleLogin = () => {
+  const handleGuestLogin = () => {
     initiateAnonymousSignIn(auth);
+  };
+  
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    initiateEmailSignIn(auth, email, password);
   };
 
   if (isUserLoading || user) {
@@ -38,19 +49,41 @@ export default function LoginPage() {
           <CardTitle className="text-3xl font-headline text-primary">
             Bharat Bazaar
           </CardTitle>
-          <CardDescription>
-            Explore the marketplace as a guest
-          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
-            <Button onClick={handleLogin} type="submit" className="w-full">
-              Enter as Guest
-            </Button>
-            <p className="mt-4 text-center text-sm text-muted-foreground">
-              Click the button to explore the demo.
-            </p>
-          </div>
+            <form onSubmit={handleAdminLogin} className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Login as Admin
+              </Button>
+            </form>
+            <Separator className="my-4" />
+             <div className="grid gap-4 text-center">
+                <p className="text-sm text-muted-foreground">Or explore the marketplace as a guest</p>
+                <Button onClick={handleGuestLogin} variant="secondary" className="w-full">
+                  Enter as Guest
+                </Button>
+            </div>
         </CardContent>
       </Card>
     </div>
