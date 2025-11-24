@@ -1,5 +1,7 @@
+
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -25,6 +27,13 @@ export default function CheckoutPage() {
   const { addOrder } = useOrders();
   const router = useRouter();
 
+  const [address, setAddress] = useState('123 Palace Road');
+  const [city, setCity] = useState('Jaipur');
+  const [state, setState] = useState('Rajasthan');
+  const [zip, setZip] = useState('302001');
+  const [cardNumber, setCardNumber] = useState('**** **** **** 1234');
+
+
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
@@ -42,7 +51,14 @@ export default function CheckoutPage() {
             productName: item.product.name,
             quantity: item.quantity,
             price: item.product.price
-          }))
+          })),
+          shippingAddress: {
+            address,
+            city,
+            state,
+            zip
+          },
+          paymentMethod: cardNumber
       };
 
       const newOrder = addOrder(newOrderData);
@@ -101,19 +117,19 @@ export default function CheckoutPage() {
               </div>
               <div className="sm:col-span-2 grid gap-2">
                 <Label htmlFor="address">Address</Label>
-                <Input id="address" placeholder="123 Palace Road" />
+                <Input id="address" placeholder="123 Palace Road" value={address} onChange={(e) => setAddress(e.target.value)} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="city">City</Label>
-                <Input id="city" placeholder="Jaipur" />
+                <Input id="city" placeholder="Jaipur" value={city} onChange={(e) => setCity(e.target.value)} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="state">State</Label>
-                <Input id="state" placeholder="Rajasthan" />
+                <Input id="state" placeholder="Rajasthan" value={state} onChange={(e) => setState(e.target.value)}/>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="zip">ZIP Code</Label>
-                <Input id="zip" placeholder="302001" />
+                <Input id="zip" placeholder="302001" value={zip} onChange={(e) => setZip(e.target.value)} />
               </div>
             </CardContent>
           </Card>
@@ -128,7 +144,7 @@ export default function CheckoutPage() {
             <CardContent className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="card-number">Card Number</Label>
-                <Input id="card-number" placeholder="**** **** **** 1234" />
+                <Input id="card-number" placeholder="**** **** **** 1234" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)}/>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div className="grid gap-2 col-span-2">

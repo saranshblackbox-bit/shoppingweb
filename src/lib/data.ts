@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 import { Gem, Home, Shirt, Glasses } from 'lucide-react';
 
@@ -169,6 +170,13 @@ type OrderItem = {
   price: number;
 };
 
+export type ShippingAddress = {
+    address: string;
+    city: string;
+    state: string;
+    zip: string;
+}
+
 export type Order = {
     id: string;
     customerName: string;
@@ -177,12 +185,64 @@ export type Order = {
     total: number;
     status: 'Pending' | 'Shipped' | 'Delivered' | 'Cancelled';
     items: OrderItem[];
+    shippingAddress: ShippingAddress;
+    paymentMethod: string;
 };
 
 export const orders: Order[] = [
-    { id: 'ord-001', customerName: 'Aarav Patel', customerEmail: 'aarav.p@example.com', date: '2024-05-20', total: 18750, status: 'Delivered', items: [{ productId: 'prod-1', productName: 'Handcrafted Silk Saree', quantity: 1, price: 12500 }, { productId: 'prod-2', productName: 'Embroidered Men\'s Kurta', quantity: 1, price: 6250 }]},
-    { id: 'ord-002', customerName: 'Saanvi Gupta', customerEmail: 'saanvi.g@example.com', date: '2024-05-22', total: 8000, status: 'Shipped', items: [{productId: 'prod-3', productName: 'Gold Jhumka Earrings', quantity: 1, price: 8000}]},
-    { id: 'ord-003', customerName: 'Aarav Patel', customerEmail: 'aarav.p@example.com', date: '2024-05-28', total: 5000, status: 'Pending', items: [{productId: 'prod-6', productName: 'Madhubani Art Wall Hanging', quantity: 1, price: 5000}]},
-    { id: 'ord-004', customerName: 'Saanvi Gupta', customerEmail: 'saanvi.g@example.com', date: '2024-06-01', total: 3750, status: 'Pending', items: [{productId: 'prod-5', productName: 'Hand-Painted Terracotta Vases', quantity: 1, price: 3750}]},
-    { id: 'ord-005', customerName: 'Rohan Mehta', customerEmail: 'rohan.mehta@example.com', date: '2024-06-02', total: 12500, status: 'Cancelled', items: [{productId: 'prod-1', productName: 'Handcrafted Silk Saree', quantity: 1, price: 12500}]},
+    { 
+        id: 'ord-001', 
+        customerName: 'Aarav Patel', 
+        customerEmail: 'aarav.p@example.com', 
+        date: '2024-05-20', 
+        total: 18750, 
+        status: 'Delivered', 
+        items: [{ productId: 'prod-1', productName: 'Handcrafted Silk Saree', quantity: 1, price: 12500 }, { productId: 'prod-2', productName: 'Embroidered Men\'s Kurta', quantity: 1, price: 6250 }],
+        shippingAddress: { address: '123 Palace Road', city: 'Jaipur', state: 'Rajasthan', zip: '302001' },
+        paymentMethod: '**** **** **** 1234'
+    },
+    { 
+        id: 'ord-002', 
+        customerName: 'Saanvi Gupta', 
+        customerEmail: 'saanvi.g@example.com', 
+        date: '2024-05-22', 
+        total: 8000, 
+        status: 'Shipped', 
+        items: [{productId: 'prod-3', productName: 'Gold Jhumka Earrings', quantity: 1, price: 8000}],
+        shippingAddress: { address: '456 Lake View Apt', city: 'Udaipur', state: 'Rajasthan', zip: '313001' },
+        paymentMethod: '**** **** **** 5678'
+    },
+    { 
+        id: 'ord-003', 
+        customerName: 'Aarav Patel', 
+        customerEmail: 'aarav.p@example.com', 
+        date: '2024-05-28', 
+        total: 5000, 
+        status: 'Pending', 
+        items: [{productId: 'prod-6', productName: 'Madhubani Art Wall Hanging', quantity: 1, price: 5000}],
+        shippingAddress: { address: '123 Palace Road', city: 'Jaipur', state: 'Rajasthan', zip: '302001' },
+        paymentMethod: '**** **** **** 1234'
+    },
+    { 
+        id: 'ord-004', 
+        customerName: 'Saanvi Gupta', 
+        customerEmail: 'saanvi.g@example.com', 
+        date: '2024-06-01', 
+        total: 3750, 
+        status: 'Pending', 
+        items: [{productId: 'prod-5', productName: 'Hand-Painted Terracotta Vases', quantity: 1, price: 3750}],
+        shippingAddress: { address: '456 Lake View Apt', city: 'Udaipur', state: 'Rajasthan', zip: '313001' },
+        paymentMethod: '**** **** **** 5678'
+    },
+    { 
+        id: 'ord-005', 
+        customerName: 'Rohan Mehta', 
+        customerEmail: 'rohan.mehta@example.com', 
+        date: '2024-06-02', 
+        total: 12500, 
+        status: 'Cancelled', 
+        items: [{productId: 'prod-1', productName: 'Handcrafted Silk Saree', quantity: 1, price: 12500}],
+        shippingAddress: { address: '789 Desert Trail', city: 'Jodhpur', state: 'Rajasthan', zip: '342001' },
+        paymentMethod: '**** **** **** 9012'
+    },
 ]

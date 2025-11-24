@@ -33,7 +33,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import type { Order } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, CreditCard, Home } from 'lucide-react';
 
 const orderStatuses: Order['status'][] = [
   'Pending',
@@ -126,6 +126,24 @@ export default function OrderDetailsPage() {
                   )}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Home/> Shipping Address</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p>{order.customerName}</p>
+                <p className="text-muted-foreground">{order.shippingAddress.address}</p>
+                <p className="text-muted-foreground">{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}</p>
+            </CardContent>
+          </Card>
+           <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><CreditCard/> Payment Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p>Card ending in: <span className="font-mono">{order.paymentMethod.slice(-4)}</span></p>
             </CardContent>
           </Card>
         </div>
