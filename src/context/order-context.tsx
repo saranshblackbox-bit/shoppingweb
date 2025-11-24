@@ -9,6 +9,8 @@ import { v4 as uuidv4 } from 'uuid';
 type OrderContextType = {
   orders: OrderType[];
   addOrder: (order: Omit<OrderType, 'id'>) => OrderType;
+  getOrderById: (orderId: string) => OrderType | undefined;
+  updateOrderStatus: (orderId: string, status: OrderType['status']) => void;
   isLoading: boolean;
 };
 
@@ -40,15 +42,12 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // This effect runs only on the client, after the initial render.
-    // This prevents hydration mismatch.
     setOrders(getInitialOrders());
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    // This effect saves to localStorage whenever orders change, but only on the client.
-    if (typeof window !== 'undefined' && !isLoading) {
+     if (typeof window !== 'undefined' && !isLoading) {
         try {
             window.localStorage.setItem('orders', JSON.stringify(orders));
         } catch (error) {
@@ -62,13 +61,25 @@ export function OrderProvider({ children }: { children: ReactNode }) {
       ...orderData,
       id: uuidv4(),
     };
-    setOrders(prevOrders => [...prevOrders, newOrder]);
+    setOrders(prevOrders => [newOrder, ...prevOrders]);
     return newOrder;
+  };
+  
+  const getOrderById = (orderId: string) => {
+      return orders.find(o => o.id === orderId);
+  }
+
+  const updateOrderStatus = (orderId: string, status: OrderType['status']) => {
+    setOrders(prevOrders =>
+      prevOrders.map(o => (o.id === orderId ? { ...o, status } : o))
+    );
   };
 
   const value = {
     orders,
     addOrder,
+    getOrderById,
+    updateOrderStatus,
     isLoading,
   };
 

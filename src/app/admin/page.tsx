@@ -24,6 +24,7 @@ import { useOrders } from '@/context/order-context';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import Link from 'next/link';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -125,8 +126,12 @@ export default function AdminDashboardPage() {
               </TableHeader>
               <TableBody>
                 {recentOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
+                  <TableRow key={order.id} onClick={() => router.push(getAdminLink(`/admin/orders/${order.id}`))} className="cursor-pointer">
+                    <TableCell className="font-medium">
+                      <Link href={getAdminLink(`/admin/orders/${order.id}`)} className="hover:underline truncate block" style={{maxWidth: '100px'}}>
+                        {order.id}
+                      </Link>
+                    </TableCell>
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
                     <TableCell>₹{order.total.toFixed(2)}</TableCell>

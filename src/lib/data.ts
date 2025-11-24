@@ -162,6 +162,13 @@ export const users: User[] = [
     { id: 'user-4', name: 'Saanvi Gupta', email: 'saanvi.g@example.com', role: 'Customer', avatarId: 'admin-avatar-1', registeredAt: '2023-04-10' },
 ];
 
+type OrderItem = {
+  productId: string;
+  productName: string;
+  quantity: number;
+  price: number;
+};
+
 export type Order = {
     id: string;
     customerName: string;
@@ -169,12 +176,13 @@ export type Order = {
     date: string;
     total: number;
     status: 'Pending' | 'Shipped' | 'Delivered' | 'Cancelled';
+    items: OrderItem[];
 };
 
 export const orders: Order[] = [
-    { id: 'ord-001', customerName: 'Aarav Patel', customerEmail: 'aarav.p@example.com', date: '2024-05-20', total: 18750, status: 'Delivered'},
-    { id: 'ord-002', customerName: 'Saanvi Gupta', customerEmail: 'saanvi.g@example.com', date: '2024-05-22', total: 8000, status: 'Shipped'},
-    { id: 'ord-003', customerName: 'Aarav Patel', customerEmail: 'aarav.p@example.com', date: '2024-05-28', total: 5000, status: 'Pending'},
-    { id: 'ord-004', customerName: 'Saanvi Gupta', customerEmail: 'saanvi.g@example.com', date: '2024-06-01', total: 3750, status: 'Pending'},
-    { id: 'ord-005', customerName: 'Rohan Mehta', customerEmail: 'rohan.mehta@example.com', date: '2024-06-02', total: 12500, status: 'Cancelled'},
+    { id: 'ord-001', customerName: 'Aarav Patel', customerEmail: 'aarav.p@example.com', date: '2024-05-20', total: 18750, status: 'Delivered', items: [{ productId: 'prod-1', productName: 'Handcrafted Silk Saree', quantity: 1, price: 12500 }, { productId: 'prod-2', productName: 'Embroidered Men\'s Kurta', quantity: 1, price: 6250 }]},
+    { id: 'ord-002', customerName: 'Saanvi Gupta', customerEmail: 'saanvi.g@example.com', date: '2024-05-22', total: 8000, status: 'Shipped', items: [{productId: 'prod-3', productName: 'Gold Jhumka Earrings', quantity: 1, price: 8000}]},
+    { id: 'ord-003', customerName: 'Aarav Patel', customerEmail: 'aarav.p@example.com', date: '2024-05-28', total: 5000, status: 'Pending', items: [{productId: 'prod-6', productName: 'Madhubani Art Wall Hanging', quantity: 1, price: 5000}]},
+    { id: 'ord-004', customerName: 'Saanvi Gupta', customerEmail: 'saanvi.g@example.com', date: '2024-06-01', total: 3750, status: 'Pending', items: [{productId: 'prod-5', productName: 'Hand-Painted Terracotta Vases', quantity: 1, price: 3750}]},
+    { id: 'ord-005', customerName: 'Rohan Mehta', customerEmail: 'rohan.mehta@example.com', date: '2024-06-02', total: 12500, status: 'Cancelled', items: [{productId: 'prod-1', productName: 'Handcrafted Silk Saree', quantity: 1, price: 12500}]},
 ]

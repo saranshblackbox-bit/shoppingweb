@@ -34,7 +34,7 @@ export default function CheckoutPage() {
       const newOrderData = {
           customerName: "Aarav Patel",
           customerEmail: 'aarav.p@example.com',
-          date: new Date().toISOString().split('T')[0],
+          date: new Date().toISOString(),
           total: total,
           status: 'Pending' as const,
           items: cartItems.map(item => ({

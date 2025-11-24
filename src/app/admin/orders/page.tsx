@@ -13,16 +13,21 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useOrders } from '@/context/order-context';
 import { format } from 'date-fns';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 
 export default function AdminOrdersPage() {
   const { orders, isLoading } = useOrders();
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  const getAdminLink = (path: string) => `${path}?role=admin`;
 
   return (
     <Card>
@@ -40,11 +45,12 @@ export default function AdminOrdersPage() {
                   <TableHead>Date</TableHead>
                   <TableHead>Total</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {orders.map((order) => (
-                  <TableRow key={order.id}>
+                  <TableRow key={order.id} onClick={() => router.push(getAdminLink(`/admin/orders/${order.id}`))} className="cursor-pointer">
                     <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
                     <TableCell className="font-medium">{order.customerName}</TableCell>
                     <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
@@ -64,6 +70,11 @@ export default function AdminOrdersPage() {
                       >
                         {order.status}
                       </Badge>
+                    </TableCell>
+                     <TableCell>
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={getAdminLink(`/admin/orders/${order.id}`)}>View Details</Link>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
