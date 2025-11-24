@@ -19,7 +19,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
             title: "Product Updated",
             description: `${data.name} has been successfully updated.`,
         });
-        router.push('/admin/products');
+        router.push('/admin/products?role=admin');
     }
     
     if (!product) {

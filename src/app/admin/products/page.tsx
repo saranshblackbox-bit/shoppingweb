@@ -23,11 +23,13 @@ import {
 export default function AdminProductsPage() {
   const router = useRouter();
 
+  const getAdminLink = (path: string) => `${path}?role=admin`;
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="font-headline text-2xl">Manage Products</CardTitle>
-        <Button onClick={() => router.push('/admin/products/new')}>
+        <Button onClick={() => router.push(getAdminLink('/admin/products/new'))}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Add Product
         </Button>
@@ -59,7 +61,7 @@ export default function AdminProductsPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => router.push(`/admin/products/edit/${product.id}`)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => router.push(getAdminLink(`/admin/products/edit/${product.id}`))}>Edit</DropdownMenuItem>
                           <DropdownMenuItem>Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

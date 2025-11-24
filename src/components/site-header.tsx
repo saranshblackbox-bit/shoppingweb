@@ -20,7 +20,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const role = searchParams.get('role');
-  const isAdmin = role === 'admin' || pathname.startsWith('/admin');
+  const isAdmin = role === 'admin';
 
   const userAvatar = PlaceHolderImages.find(
     (img) => img.id === 'customer-avatar'
@@ -66,7 +66,7 @@ export function SiteHeader() {
             ))}
              {isAdmin && (
               <Link
-                href="/admin/products"
+                href="/admin/products?role=admin"
                 className={cn(
                   'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm',
                    pathname.startsWith('/admin') ? 'text-foreground' : 'text-foreground/60'
@@ -120,7 +120,7 @@ export function SiteHeader() {
                 </DropdownMenuItem>}
                  {isAdmin && (
                   <DropdownMenuItem asChild>
-                    <Link href="/admin/products">Admin Panel</Link>
+                    <Link href="/admin/products?role=admin">Admin Panel</Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />

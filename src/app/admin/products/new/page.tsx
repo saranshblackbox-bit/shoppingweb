@@ -16,7 +16,7 @@ export default function NewProductPage() {
             title: "Product Created",
             description: `${data.name} has been successfully added.`,
         });
-        router.push('/admin/products');
+        router.push('/admin/products?role=admin');
     }
 
     return (

@@ -149,13 +149,15 @@ export type User = {
   id: string;
   name: string;
   email: string;
+  password?: string;
   role: 'Admin' | 'Customer';
   avatarId: string;
   registeredAt: string;
 };
 
 export const users: User[] = [
-    { id: 'user-1', name: 'Priya Sharma', email: 'priya.sharma@example.com', role: 'Admin', avatarId: 'admin-avatar-1', registeredAt: '2023-01-15' },
+    { id: 'user-1', name: 'Admin User', email: 'admin@example.com', password: 'password', role: 'Admin', avatarId: 'admin-avatar-1', registeredAt: '2023-01-15' },
+    { id: 'user-2', name: 'Customer User', email: 'customer@example.com', password: 'password', role: 'Customer', avatarId: 'customer-avatar', registeredAt: '2023-02-20' },
     { id: 'user-3', name: 'Aarav Patel', email: 'aarav.p@example.com', role: 'Customer', avatarId: 'customer-avatar', registeredAt: '2023-03-05' },
     { id: 'user-4', name: 'Saanvi Gupta', email: 'saanvi.g@example.com', role: 'Customer', avatarId: 'admin-avatar-1', registeredAt: '2023-04-10' },
 ];
