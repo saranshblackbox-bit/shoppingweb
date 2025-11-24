@@ -106,16 +106,24 @@ export default function OrderDetailsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {order.items?.map((item) => (
-                    <TableRow key={item.productId}>
-                      <TableCell className="font-medium">{item.productName}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
-                      <TableCell>₹{item.price.toFixed(2)}</TableCell>
-                      <TableCell className="text-right">
-                        ₹{(item.price * item.quantity).toFixed(2)}
+                  {order.items && order.items.length > 0 ? (
+                    order.items.map((item) => (
+                      <TableRow key={item.productId}>
+                        <TableCell className="font-medium">{item.productName}</TableCell>
+                        <TableCell>{item.quantity}</TableCell>
+                        <TableCell>₹{item.price.toFixed(2)}</TableCell>
+                        <TableCell className="text-right">
+                          ₹{(item.price * item.quantity).toFixed(2)}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center">
+                        No items found in this order.
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
