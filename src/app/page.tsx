@@ -29,11 +29,8 @@ export default function LoginPage() {
     );
 
     if (user) {
-      if (user.role === 'Admin') {
-        router.push('/admin?role=admin');
-      } else {
-        router.push('/dashboard');
-      }
+      const role = user.role.toLowerCase();
+      router.push(`/welcome?name=${encodeURIComponent(user.name)}&role=${role}`);
     } else {
       toast({
         variant: 'destructive',
