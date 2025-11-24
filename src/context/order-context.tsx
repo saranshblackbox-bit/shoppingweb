@@ -26,10 +26,15 @@ export function useOrders() {
 
 const getInitialOrders = (): OrderType[] => {
     if (typeof window === 'undefined') {
-        return mockOrders;
+        return [];
     }
     try {
         const item = window.localStorage.getItem('orders');
+        // If no item in localStorage, initialize with mock data
+        if (item === null) {
+            window.localStorage.setItem('orders', JSON.stringify(mockOrders));
+            return mockOrders;
+        }
         return item ? JSON.parse(item) : mockOrders;
     } catch (error) {
         console.warn(`Error reading localStorage key “orders”:`, error);
@@ -51,7 +56,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
         try {
             window.localStorage.setItem('orders', JSON.stringify(orders));
         } catch (error) {
-            console.warn(`Error setting localStorage key “orders”:`, error);
+            console.warn('Error setting localStorage key “orders”:', error);
         }
     }
   }, [orders, isLoading]);

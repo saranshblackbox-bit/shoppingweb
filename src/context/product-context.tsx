@@ -26,10 +26,15 @@ export function useProducts() {
 
 const getInitialProducts = (): Product[] => {
     if (typeof window === 'undefined') {
-        return mockProducts;
+        return [];
     }
     try {
         const item = window.localStorage.getItem('products');
+        // If no item in localStorage, initialize with mock data
+        if (item === null) {
+            window.localStorage.setItem('products', JSON.stringify(mockProducts));
+            return mockProducts;
+        }
         return item ? JSON.parse(item) : mockProducts;
     } catch (error) {
         console.warn(`Error reading localStorage key “products”:`, error);
@@ -43,14 +48,11 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // This effect runs only on the client, after the initial render.
-    // This prevents hydration mismatch.
     setProducts(getInitialProducts());
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    // This effect saves to localStorage whenever products change, but only on the client.
      if (typeof window !== 'undefined' && !isLoading) {
         try {
             window.localStorage.setItem('products', JSON.stringify(products));
