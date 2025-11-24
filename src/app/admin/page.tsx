@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,6 +29,11 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const { orders, isLoading: isLoadingOrders } = useOrders();
   const { products, isLoading: isLoadingProducts } = useProducts();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const totalProducts = products.length;
   const totalOrders = orders.length;
@@ -39,7 +45,7 @@ export default function AdminDashboardPage() {
 
   const getAdminLink = (path: string) => `${path}?role=admin`;
 
-  const isLoading = isLoadingProducts || isLoadingOrders;
+  const isLoading = isLoadingProducts || isLoadingOrders || !isClient;
 
   return (
     <div className="space-y-8">
