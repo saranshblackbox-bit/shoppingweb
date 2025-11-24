@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { products, categories, type Product } from '@/lib/data';
+import { categories, type Product } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useRouter } from 'next/navigation';
 
@@ -36,7 +36,7 @@ const productSchema = z.object({
 type ProductFormData = z.infer<typeof productSchema>;
 
 type ProductFormProps = {
-  product?: Product;
+  product?: Omit<Product, 'id'>;
   onSave: (data: ProductFormData) => void;
 };
 

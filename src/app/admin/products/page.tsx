@@ -11,8 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, MoreHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { products, categories } from '@/lib/data';
-import type { Product } from '@/lib/data';
+import { categories } from '@/lib/data';
+import { useProducts } from '@/context/product-context';
+import { useToast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,8 +23,20 @@ import {
 
 export default function AdminProductsPage() {
   const router = useRouter();
+  const { products, deleteProduct, isLoading } = useProducts();
+  const { toast } = useToast();
 
   const getAdminLink = (path: string) => `${path}?role=admin`;
+
+  const handleDelete = (productId: string, productName: string) => {
+    if (confirm(`Are you sure you want to delete "${productName}"?`)) {
+      deleteProduct(productId);
+      toast({
+        title: 'Product Deleted',
+        description: `"${productName}" has been deleted.`,
+      });
+    }
+  };
 
   return (
     <Card>
@@ -35,42 +48,44 @@ export default function AdminProductsPage() {
         </Button>
       </CardHeader>
       <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Stock</TableHead>
-                <TableHead><span className="sr-only">Actions</span></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell>{categories.find(c => c.id === product.categoryId)?.name}</TableCell>
-                  <TableCell>₹{product.price.toFixed(2)}</TableCell>
-                  <TableCell>{product.stock}</TableCell>
-                  <TableCell>
-                     <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => router.push(getAdminLink(`/admin/products/edit/${product.id}`))}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                  </TableCell>
+          {isLoading ? <p>Loading products...</p> : (
+            <Table>
+                <TableHeader>
+                <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Stock</TableHead>
+                    <TableHead><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        {!products?.length && (
+                </TableHeader>
+                <TableBody>
+                {products.map((product) => (
+                    <TableRow key={product.id}>
+                    <TableCell className="font-medium">{product.name}</TableCell>
+                    <TableCell>{categories.find(c => c.id === product.categoryId)?.name}</TableCell>
+                    <TableCell>₹{product.price.toFixed(2)}</TableCell>
+                    <TableCell>{product.stock}</TableCell>
+                    <TableCell>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                            </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => router.push(getAdminLink(`/admin/products/edit/${product.id}`))}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDelete(product.id, product.name)}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+          )}
+        {!isLoading && !products?.length && (
             <div className="text-center py-8">
                 <p className="text-muted-foreground">No products found. Add your first product to get started.</p>
             </div>

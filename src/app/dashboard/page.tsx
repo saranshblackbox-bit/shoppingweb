@@ -4,8 +4,9 @@ import { useState, useMemo } from 'react';
 import { ProductCard } from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { products, categories, type Product, type Category } from '@/lib/data';
+import { categories, type Category } from '@/lib/data';
 import { Search, Gem, Home, Shirt, Glasses } from 'lucide-react';
+import { useProducts } from '@/context/product-context';
 
 const iconMap = {
   Shirt,
@@ -17,6 +18,7 @@ const iconMap = {
 export default function CatalogPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { products } = useProducts();
 
   const filteredProducts = useMemo(() => {
     let filtered = products;
@@ -33,7 +35,7 @@ export default function CatalogPage() {
       );
     }
     return filtered;
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, products]);
 
   const handleCategoryClick = (categoryId: string | null) => {
     setSelectedCategory(categoryId);

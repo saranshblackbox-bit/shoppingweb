@@ -3,15 +3,15 @@ import { ProductForm } from '@/components/admin/product-form';
 import type { Product } from '@/lib/data';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { useProducts } from '@/context/product-context';
 
 export default function NewProductPage() {
     const router = useRouter();
     const { toast } = useToast();
+    const { addProduct } = useProducts();
 
     const handleSave = (data: Omit<Product, 'id'>) => {
-        // In a real app, you'd save this to a data source.
-        // Here we just log it, show a toast, and navigate.
-        console.log('New product:', data);
+        addProduct(data);
         toast({
             title: "Product Created",
             description: `${data.name} has been successfully added.`,

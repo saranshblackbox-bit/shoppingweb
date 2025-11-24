@@ -17,7 +17,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { products } from '@/lib/data';
+import { useProducts } from '@/context/product-context';
 import { useOrders } from '@/context/order-context';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils';
 export default function AdminDashboardPage() {
   const router = useRouter();
   const { orders } = useOrders();
+  const { products } = useProducts();
 
   const totalProducts = products.length;
   const totalOrders = orders.length;
