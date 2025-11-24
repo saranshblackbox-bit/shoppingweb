@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -10,13 +11,18 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import type { Order } from '@/lib/data';
 import { useOrders } from '@/context/order-context';
 import { format } from 'date-fns';
 
 
 export default function AdminOrdersPage() {
   const { orders, isLoading } = useOrders();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   return (
     <Card>
@@ -24,49 +30,50 @@ export default function AdminOrdersPage() {
         <CardTitle className="font-headline text-2xl">All Customer Orders</CardTitle>
       </CardHeader>
       <CardContent>
-        {isLoading && <p>Loading orders...</p>}
-        {!isLoading && orders.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Order ID</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
-                   <TableCell className="font-medium">{order.customerName}</TableCell>
-                  <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
-                  <TableCell>₹{order.total.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        order.status === 'Delivered'
-                          ? 'default'
-                          : order.status === 'Cancelled'
-                          ? 'destructive'
-                          : 'secondary'
-                      }
-                      className={cn(
-                        order.status === 'Delivered' && 'bg-green-700/80 text-white'
-                      )}
-                    >
-                      {order.status}
-                    </Badge>
-                  </TableCell>
+        {isLoading || !isClient ? <p>Loading orders...</p> : (
+          orders.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Order ID</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          !isLoading && <div className="text-center py-8">
-            <p className="text-muted-foreground">No orders have been placed yet.</p>
-          </div>
+              </TableHeader>
+              <TableBody>
+                {orders.map((order) => (
+                  <TableRow key={order.id}>
+                    <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
+                    <TableCell className="font-medium">{order.customerName}</TableCell>
+                    <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
+                    <TableCell>₹{order.total.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          order.status === 'Delivered'
+                            ? 'default'
+                            : order.status === 'Cancelled'
+                            ? 'destructive'
+                            : 'secondary'
+                        }
+                        className={cn(
+                          order.status === 'Delivered' && 'bg-green-700/80 text-white'
+                        )}
+                      >
+                        {order.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">No orders have been placed yet.</p>
+            </div>
+          )
         )}
       </CardContent>
     </Card>
