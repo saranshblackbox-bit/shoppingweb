@@ -15,12 +15,17 @@ import {
 } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useCart } from '@/context/cart-context';
+import { Badge } from './ui/badge';
 
 export function SiteHeader() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { cartItems } = useCart();
   const role = searchParams.get('role');
   const isAdmin = role === 'admin';
+
+  const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const userAvatar = PlaceHolderImages.find(
     (img) => img.id === 'customer-avatar'
@@ -81,9 +86,14 @@ export function SiteHeader() {
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
             {!isAdmin && (
-              <Button asChild variant="ghost" size="icon">
+              <Button asChild variant="ghost" size="icon" className="relative">
                 <Link href={getHref("/dashboard/checkout")}>
                   <ShoppingCart className="h-5 w-5" />
+                   {totalCartItems > 0 && (
+                    <Badge variant="destructive" className="absolute -right-2 -top-2 h-5 w-5 justify-center rounded-full p-0">
+                      {totalCartItems}
+                    </Badge>
+                  )}
                   <span className="sr-only">Shopping Cart</span>
                 </Link>
               </Button>
