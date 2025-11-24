@@ -22,9 +22,35 @@ export function useOrders() {
   return context;
 }
 
+const getInitialOrders = (): OrderType[] => {
+    if (typeof window === 'undefined') {
+        return mockOrders;
+    }
+    try {
+        const item = window.localStorage.getItem('orders');
+        return item ? JSON.parse(item) : mockOrders;
+    } catch (error) {
+        console.warn(`Error reading localStorage key “orders”:`, error);
+        return mockOrders;
+    }
+};
+
 export function OrderProvider({ children }: { children: ReactNode }) {
-  const [orders, setOrders] = useState<OrderType[]>(mockOrders);
-  const [isLoading, setIsLoading] = useState(false);
+  const [orders, setOrders] = useState<OrderType[]>(getInitialOrders);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    try {
+        window.localStorage.setItem('orders', JSON.stringify(orders));
+    } catch (error) {
+        console.warn(`Error setting localStorage key “orders”:`, error);
+    }
+     setIsLoading(false);
+  }, [orders]);
+  
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   const addOrder = (orderData: Omit<OrderType, 'id'>): OrderType => {
     const newOrder: OrderType = {
@@ -38,7 +64,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   const value = {
     orders,
     addOrder,
-    isLoading,
+    isLoading: isLoading,
   };
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;

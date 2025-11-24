@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { Product } from '@/lib/data';
 import { products as mockProducts } from '@/lib/data';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,9 +24,36 @@ export function useProducts() {
   return context;
 }
 
+const getInitialProducts = (): Product[] => {
+    if (typeof window === 'undefined') {
+        return mockProducts;
+    }
+    try {
+        const item = window.localStorage.getItem('products');
+        return item ? JSON.parse(item) : mockProducts;
+    } catch (error) {
+        console.warn(`Error reading localStorage key “products”:`, error);
+        return mockProducts;
+    }
+};
+
+
 export function ProductProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [isLoading, setIsLoading] = useState(false);
+  const [products, setProducts] = useState<Product[]>(getInitialProducts);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    try {
+        window.localStorage.setItem('products', JSON.stringify(products));
+    } catch (error) {
+        console.warn(`Error setting localStorage key “products”:`, error);
+    }
+    setIsLoading(false);
+  }, [products]);
+  
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   const addProduct = (productData: Omit<Product, 'id'>): Product => {
     const newProduct: Product = {
@@ -57,7 +84,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
     updateProduct,
     deleteProduct,
     getProductById,
-    isLoading,
+    isLoading: isLoading,
   };
 
   return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>;
