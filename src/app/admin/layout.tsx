@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { Package, ShoppingCart } from 'lucide-react';
+import { Home, Package, ShoppingCart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { OrderProvider } from '@/context/order-context';
 
@@ -41,6 +41,11 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             <aside>
               <nav>
                 <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === '/admin'}>
+                      <Link href={getAdminLink("/admin")}><Home className="mr-2" />Dashboard</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/products')}>
                       <Link href={getAdminLink("/admin/products")}><Package className="mr-2" />Products</Link>

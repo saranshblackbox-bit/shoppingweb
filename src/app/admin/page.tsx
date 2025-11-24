@@ -1,0 +1,145 @@
+'use client';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import {
+  Package,
+  ShoppingCart,
+  IndianRupee,
+  ArrowRight,
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { products } from '@/lib/data';
+import { useOrders } from '@/context/order-context';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+
+export default function AdminDashboardPage() {
+  const router = useRouter();
+  const { orders } = useOrders();
+
+  const totalProducts = products.length;
+  const totalOrders = orders.length;
+  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+
+  const recentOrders = [...orders]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5);
+
+  const getAdminLink = (path: string) => `${path}?role=admin`;
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold font-headline">Admin Dashboard</h1>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalProducts}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalOrders}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <IndianRupee className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ₹{totalRevenue.toLocaleString('en-IN')}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="font-headline text-2xl">
+            Recent Orders
+          </CardTitle>
+          <Button
+            variant="outline"
+            onClick={() => router.push(getAdminLink('/admin/orders'))}
+          >
+            View All Orders <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Total</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recentOrders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell className="font-medium truncate" style={{maxWidth: '100px'}}>{order.id}</TableCell>
+                  <TableCell>{order.customerName}</TableCell>
+                  <TableCell>{format(new Date(order.date), 'yyyy-MM-dd')}</TableCell>
+                  <TableCell>₹{order.total.toFixed(2)}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        order.status === 'Delivered'
+                          ? 'default'
+                          : order.status === 'Cancelled'
+                          ? 'destructive'
+                          : 'secondary'
+                      }
+                      className={cn(
+                        order.status === 'Delivered' &&
+                          'bg-green-700/80 text-white'
+                      )}
+                    >
+                      {order.status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+       <Card>
+        <CardHeader>
+            <CardTitle className="font-headline text-2xl">
+                Quick Actions
+            </CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-4">
+            <Button onClick={() => router.push(getAdminLink('/admin/products'))}>
+                <Package className="mr-2"/> Manage Products
+            </Button>
+            <Button onClick={() => router.push(getAdminLink('/admin/products/new'))}>
+                Add New Product
+            </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

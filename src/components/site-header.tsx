@@ -66,7 +66,7 @@ export function SiteHeader() {
             ))}
              {isAdmin && (
               <Link
-                href="/admin/products?role=admin"
+                href="/admin?role=admin"
                 className={cn(
                   'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm',
                    pathname.startsWith('/admin') ? 'text-foreground' : 'text-foreground/60'
@@ -120,7 +120,7 @@ export function SiteHeader() {
                 </DropdownMenuItem>}
                  {isAdmin && (
                   <DropdownMenuItem asChild>
-                    <Link href="/admin/products?role=admin">Admin Panel</Link>
+                    <Link href="/admin?role=admin">Admin Panel</Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
