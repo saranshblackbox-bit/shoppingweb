@@ -10,6 +10,9 @@ This document outlines the key features and technical specifications of the Bhar
 - **Account Creation:** A dedicated sign-up page for new customers to register.
 - **Animated Welcome Page:** A brief, animated welcome screen is displayed upon successful login for a polished user experience.
 
+*Login Page*
+![Login Page](https://placehold.co/800x450?text=Login+Screen)
+
 ### 2. Customer-Facing Experience (Dashboard)
 - **Product Catalog:** A rich catalog page to display all products.
   - **Search:** Users can search for products by name.
@@ -21,6 +24,9 @@ This document outlines the key features and technical specifications of the Bhar
 - **Order Confirmation:** A confirmation page is displayed after a successful order, summarizing the purchase.
 - **My Orders:** A dedicated page for logged-in customers to view their order history and track order statuses.
 - **AI-Powered Chat Widget:** A support chat widget provides quick answers to common questions about shipping, tracking, and returns.
+
+*Customer Product Catalog*
+![Customer Product Catalog](https://placehold.co/800x450?text=Product+Catalog+View)
 
 ### 3. Admin Panel
 - **Secure Dashboard:** A role-protected admin area accessible only to users with the 'Admin' role.
@@ -37,6 +43,9 @@ This document outlines the key features and technical specifications of the Bhar
   - View a list of all customer orders.
   - Inspect individual order details, including items, customer information, shipping address, and payment details.
   - Update the status of an order (e.g., Pending, Shipped, Delivered, Cancelled).
+
+*Admin Dashboard*
+![Admin Dashboard](https://placehold.co/800x450?text=Admin+Dashboard+Overview)
 
 ## Technical Specifications
 
