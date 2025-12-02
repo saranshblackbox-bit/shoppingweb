@@ -5,6 +5,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 import type { User } from '@/lib/data';
 import { useUsers } from './user-context';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 type AuthContextType = {
   currentUser: User | null;
@@ -27,6 +28,7 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { users } = useUsers();
   const router = useRouter();
+  const { toast } = useToast();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,6 +50,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     if (user) {
+      if (!user.isVerified) {
+        toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: 'Please verify your email address before logging in.',
+        });
+        return false;
+      }
+
       setCurrentUser(user);
       try {
         window.sessionStorage.setItem('currentUser', JSON.stringify(user));

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
@@ -8,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 type UserContextType = {
   users: User[];
   addUser: (userData: Omit<User, 'id' | 'registeredAt'>) => User;
+  verifyUser: (email: string) => void;
   isLoading: boolean;
 };
 
@@ -23,7 +25,7 @@ export function useUsers() {
 
 const getInitialUsers = (): User[] => {
     if (typeof window === 'undefined') {
-        return [];
+        return mockUsers;
     }
     try {
         const item = window.localStorage.getItem('users');
@@ -62,14 +64,24 @@ export function UserProvider({ children }: { children: ReactNode }) {
       ...userData,
       id: uuidv4(),
       registeredAt: new Date().toISOString(),
+      isVerified: false,
     };
     setUsers(prevUsers => [newUser, ...prevUsers]);
     return newUser;
+  };
+  
+  const verifyUser = (email: string) => {
+    setUsers(prevUsers => 
+        prevUsers.map(user => 
+            user.email === email ? { ...user, isVerified: true } : user
+        )
+    );
   };
 
   const value = {
     users,
     addUser,
+    verifyUser,
     isLoading,
   };
 

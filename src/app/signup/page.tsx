@@ -1,3 +1,4 @@
+
 'use client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -60,9 +61,9 @@ export default function SignupPage() {
 
     toast({
         title: 'Account Created',
-        description: 'Your account has been successfully created. Please log in.',
+        description: 'Please check your email to verify your account.',
     });
-    router.push('/');
+    router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
   };
 
   return (
