@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -48,11 +48,22 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { isAuthenticated, currentUser } = useAuth();
 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [zip, setZip] = useState('');
   const [cardNumber, setCardNumber] = useState('');
+
+  useEffect(() => {
+    if (currentUser) {
+      // Pre-fill name from logged-in user, but allow changes
+      const nameParts = currentUser.name.split(' ');
+      setFirstName(nameParts[0] || '');
+      setLastName(nameParts.slice(1).join(' ') || '');
+    }
+  }, [currentUser]);
 
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
@@ -62,7 +73,7 @@ export default function CheckoutPage() {
   const handlePlaceOrder = () => {
     if(cartItems.length > 0 && currentUser) {
       const newOrderData = {
-          customerName: currentUser.name,
+          customerName: `${firstName} ${lastName}`,
           customerEmail: currentUser.email,
           date: new Date().toISOString(),
           total: total,
@@ -133,11 +144,11 @@ export default function CheckoutPage() {
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="first-name">First Name</Label>
-                <Input id="first-name" placeholder="Priya" />
+                <Input id="first-name" placeholder="Enter first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="last-name">Last Name</Label>
-                <Input id="last-name" placeholder="Sharma" />
+                <Input id="last-name" placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
               </div>
               <div className="sm:col-span-2 grid gap-2">
                 <Label htmlFor="address">Address</Label>
