@@ -31,6 +31,7 @@ export async function visualSearch(input: VisualSearchInput): Promise<VisualSear
 
 const prompt = ai.definePrompt({
   name: 'visualSearchPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: { schema: VisualSearchInputSchema },
   output: { schema: VisualSearchOutputSchema },
   prompt: `You are an expert at identifying Indian apparel, jewelry, and home decor from images. Analyze the provided image and generate a short, generic search term (2-3 words) that could be used to find similar products in an e-commerce store.
