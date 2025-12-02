@@ -33,7 +33,10 @@ const chatFlow = ai.defineFlow(
       model: 'googleai/gemini-1.5-flash-latest',
       prompt: {
         system: systemPrompt,
-        messages: messages,
+        messages: messages.map((message) => ({
+          role: message.role,
+          content: [{ text: message.content }],
+        })),
       },
       config: {
         temperature: 0.3,
