@@ -15,17 +15,38 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { CreditCard, ShoppingCart, Truck } from 'lucide-react';
+import { CreditCard, ShoppingCart, Truck, User } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import Link from 'next/link';
 import { useOrders } from '@/context/order-context';
 import { default as NextImage } from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/auth-context';
+
+function GuestCheckoutPrompt() {
+    const router = useRouter();
+    return (
+        <Card className="text-center py-12">
+            <CardHeader>
+                <User className="mx-auto h-12 w-12 text-muted-foreground" />
+                <CardTitle className="mt-4 font-headline text-2xl">Please log in to continue</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-muted-foreground">You need to be logged in to place an order.</p>
+            </CardContent>
+            <CardFooter className="flex justify-center">
+                <Button onClick={() => router.push('/')}>Log In</Button>
+            </CardFooter>
+        </Card>
+    )
+}
+
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
   const { addOrder } = useOrders();
   const router = useRouter();
+  const { isAuthenticated, currentUser } = useAuth();
 
   const [address, setAddress] = useState('123 Palace Road');
   const [city, setCity] = useState('Jaipur');
@@ -39,10 +60,10 @@ export default function CheckoutPage() {
   const total = subtotal + shipping;
   
   const handlePlaceOrder = () => {
-    if(cartItems.length > 0) {
+    if(cartItems.length > 0 && currentUser) {
       const newOrderData = {
-          customerName: "Aarav Patel",
-          customerEmail: 'aarav.p@example.com',
+          customerName: currentUser.name,
+          customerEmail: currentUser.email,
           date: new Date().toISOString(),
           total: total,
           status: 'Pending' as const,
@@ -82,7 +103,9 @@ export default function CheckoutPage() {
         </p>
       </div>
       
-      {cartItems.length === 0 ? (
+      {!isAuthenticated ? (
+         <GuestCheckoutPrompt />
+      ) : cartItems.length === 0 ? (
         <Card className="text-center py-12">
           <CardHeader>
             <ShoppingCart className="mx-auto h-12 w-12 text-muted-foreground" />
@@ -110,11 +133,11 @@ export default function CheckoutPage() {
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="first-name">First Name</Label>
-                <Input id="first-name" placeholder="Priya" defaultValue="Aarav" />
+                <Input id="first-name" placeholder="Priya" defaultValue={currentUser?.name.split(' ')[0]} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="last-name">Last Name</Label>
-                <Input id="last-name" placeholder="Sharma" defaultValue="Patel" />
+                <Input id="last-name" placeholder="Sharma" defaultValue={currentUser?.name.split(' ')[1]} />
               </div>
               <div className="sm:col-span-2 grid gap-2">
                 <Label htmlFor="address">Address</Label>
@@ -215,7 +238,7 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter>
-               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
+               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0 || !isAuthenticated}>
                 Place Order
               </Button>
             </CardFooter>

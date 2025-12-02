@@ -1,8 +1,10 @@
+
 import type { Metadata } from 'next';
 import { Alegreya } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { UserProvider } from '@/context/user-context';
+import { AuthProvider } from '@/context/auth-context';
 
 const alegreya = Alegreya({
   subsets: ['latin'],
@@ -24,7 +26,9 @@ export default function RootLayout({
     <html lang="en" className={alegreya.variable}>
       <body>
         <UserProvider>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </UserProvider>
         <Toaster />
       </body>
