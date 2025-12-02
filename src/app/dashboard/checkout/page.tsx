@@ -48,11 +48,11 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { isAuthenticated, currentUser } = useAuth();
 
-  const [address, setAddress] = useState('123 Palace Road');
-  const [city, setCity] = useState('Jaipur');
-  const [state, setState] = useState('Rajasthan');
-  const [zip, setZip] = useState('302001');
-  const [cardNumber, setCardNumber] = useState('**** **** **** 1234');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zip, setZip] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
 
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
@@ -133,11 +133,11 @@ export default function CheckoutPage() {
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="first-name">First Name</Label>
-                <Input id="first-name" placeholder="Priya" defaultValue={currentUser?.name.split(' ')[0]} />
+                <Input id="first-name" placeholder="Priya" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="last-name">Last Name</Label>
-                <Input id="last-name" placeholder="Sharma" defaultValue={currentUser?.name.split(' ')[1]} />
+                <Input id="last-name" placeholder="Sharma" />
               </div>
               <div className="sm:col-span-2 grid gap-2">
                 <Label htmlFor="address">Address</Label>
