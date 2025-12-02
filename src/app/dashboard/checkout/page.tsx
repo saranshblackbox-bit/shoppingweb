@@ -56,16 +56,6 @@ export default function CheckoutPage() {
   const [zip, setZip] = useState('');
   const [cardNumber, setCardNumber] = useState('');
 
-  useEffect(() => {
-    if (currentUser) {
-      // Pre-fill name from logged-in user, but allow changes
-      const nameParts = currentUser.name.split(' ');
-      setFirstName(nameParts[0] || '');
-      setLastName(nameParts.slice(1).join(' ') || '');
-    }
-  }, [currentUser]);
-
-
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
