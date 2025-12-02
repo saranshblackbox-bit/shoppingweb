@@ -27,11 +27,13 @@ const chatFlow = ai.defineFlow(
   async messages => {
     const systemPrompt =
       'You are a helpful and friendly e-commerce assistant for an online store called Bharat Bazaar that sells exquisite Indian products. Do not refer to yourself as a language model. Be concise with your answers.';
-    const prompt = [{role: 'system' as const, content: systemPrompt}, ...messages];
     
     const llmResponse = await ai.generate({
       model: 'googleai/gemini-1.5-flash-latest',
-      prompt: prompt.map(m => ({role: m.role, content: [{text: m.content}]})),
+      prompt: {
+        system: systemPrompt,
+        messages: messages,
+      },
       config: {
         temperature: 0.3,
       },
