@@ -5,7 +5,7 @@ import { ProductCard } from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { categories, type Category } from '@/lib/data';
-import { Search, Gem, Home, Shirt, Glasses } from 'lucide-react';
+import { Search, Gem, Home, Shirt, Glasses, SearchIcon } from 'lucide-react';
 import { useProducts } from '@/context/product-context';
 
 const iconMap = {
@@ -54,7 +54,7 @@ export default function CatalogPage() {
 
       <div className="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
         <div className="relative w-full md:max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Search for products..."
             className="pl-10"
