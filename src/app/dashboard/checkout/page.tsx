@@ -55,13 +55,30 @@ export default function CheckoutPage() {
   const [state, setState] = useState('');
   const [zip, setZip] = useState('');
   const [cardNumber, setCardNumber] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  useEffect(() => {
+    const validateForm = () => {
+        return (
+            firstName.trim() !== '' &&
+            lastName.trim() !== '' &&
+            address.trim() !== '' &&
+            city.trim() !== '' &&
+            state.trim() !== '' &&
+            zip.trim() !== '' &&
+            cardNumber.trim() !== ''
+        );
+    };
+    setIsFormValid(validateForm());
+  }, [firstName, lastName, address, city, state, zip, cardNumber]);
+
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? 500.0 : 0;
   const total = subtotal + shipping;
   
   const handlePlaceOrder = () => {
-    if(cartItems.length > 0 && currentUser) {
+    if(cartItems.length > 0 && currentUser && isFormValid) {
       const newOrderData = {
           customerName: `${firstName} ${lastName}`,
           customerEmail: currentUser.email,
@@ -239,7 +256,7 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter>
-               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={cartItems.length === 0 || !isAuthenticated}>
+               <Button className="w-full text-lg py-6" onClick={handlePlaceOrder} disabled={!isFormValid || cartItems.length === 0 || !isAuthenticated}>
                 Place Order
               </Button>
             </CardFooter>
